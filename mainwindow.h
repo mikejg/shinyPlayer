@@ -1,23 +1,19 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <QMainWindow>
+#include <QGLWidget>
+#include "dialogsetting.h"
+#include "settings.h"
 
-namespace Ui {
-    class MainWindow;
-}
-
-class MainWindow : public QMainWindow {
+class MainWindow : public QGLWidget {
     Q_OBJECT
+private:
+    DialogSetting* setting;
+    Settings* set;
 public:
-    MainWindow(QWidget *parent = 0);
+    MainWindow(QWidget *parent = 0, const QGLWidget * shareWidget = 0, Qt::WindowFlags f = 0 );
     ~MainWindow();
 
-protected:
-    void changeEvent(QEvent *e);
-
-private:
-    Ui::MainWindow *ui;
 };
 
 #endif // MAINWINDOW_H
