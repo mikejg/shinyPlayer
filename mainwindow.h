@@ -11,6 +11,7 @@
 #include "glmainmenu.h"
 #include "glmenuinterpret.h"
 #include "glmenugenre.h"
+#include "globject.h"
 
 class MainWindow : public QGLWidget {
     Q_OBJECT
@@ -35,6 +36,10 @@ public:
     void (MainWindow::*doAnimation)(QPainter* p);
     void (MainWindow::*doAnimation_second)(QPainter* p);
 
+    void mainMenu_RollOut(QPainter* p) { mainMenu->rollOut(p); }
+    void menuGenre_RollIn(QPainter* p) { menuGenre->rollIn(p); }
+    void menuInterpret_RollIn(QPainter* p) { menuInterpret->rollIn(p); }
+
 public slots:
     void animationDone();
 
@@ -42,11 +47,10 @@ public slots:
 
     void mainMenu_ButtonGenre_clicked();
     void mainMenu_ButtonInterpret_clicked();
-    void mainMenu_RollOut(QPainter* p) { mainMenu->rollOut(p); }
-    void menuGenre_RollIn(QPainter* p) { menuGenre->rollIn(p); }
 
     void setLarge();
     void setMenuGenre_RollIn();
+    void setMenuInterpret_RollIn();
 
 protected:
     void mousePressEvent ( QMouseEvent * event );

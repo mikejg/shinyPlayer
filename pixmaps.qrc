@@ -6,5 +6,7 @@
         <file>images/button400.png</file>
         <file>images/button400_pressed.png</file>
         <file>images/BackgroundBlack.png</file>
+        <file>images/button30.png</file>
+        <file>images/button30_pressed.png</file>
     </qresource>
 </RCC>

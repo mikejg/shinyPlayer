@@ -26,6 +26,10 @@ GlMainMenu::GlMainMenu(GlObject* parent) : GlObject(parent)
 
 void GlMainMenu::draw(QPainter *p)
 {
+    /*Zeichnet das Hauptmenü
+      - Hintergrundbild zeichnen
+      - Alle Buttons zeichnen*/
+
     drawBackGroundPixmap(p);
 
     for(int i = 0; i < listChilds.size(); i++)
@@ -34,6 +38,9 @@ void GlMainMenu::draw(QPainter *p)
 
 void GlMainMenu::mousePressEvent(QMouseEvent *event)
 {
+    /*Überprüft ob die Maus über einem Button gedrückt wurde und
+      führt die Funktion mousePressEvent des gedrückten Buttons aus*/
+
     QRect rect;
     for(int i = 0; i < listChilds.size(); i++)
        {
@@ -47,6 +54,7 @@ void GlMainMenu::mousePressEvent(QMouseEvent *event)
 
 void GlMainMenu::mouseReleaseEvent(QMouseEvent *event)
 {
+    /*siehe mouseReleaseEvent*/
     QRect rect;
     for(int i = 0; i < listChilds.size(); i++)
        {
@@ -60,6 +68,14 @@ void GlMainMenu::mouseReleaseEvent(QMouseEvent *event)
 
 GlButton* GlMainMenu::newButton(QString text, QRect rect)
 {
+    /*erstellet einen Button und gibt den Zeiger auf den Button zurück
+      - Zeiger auf GlButton erstellen
+      - Hintergrundbild setzen
+      - Hintergrundbild für gedrücktem zustand setzen
+      - Text setzen
+      - Postion des Buttons setzen
+      - Image setzen. Wird für die Animation gebrauch*/
+
     GlButton* button = new GlButton(this);
     button->setBackGroundPixmap(QPixmap(":/images/button.png"));
     button->setBackGroundPixmapPressed(QPixmap(":/images/button_pressed.png"));
@@ -72,6 +88,8 @@ GlButton* GlMainMenu::newButton(QString text, QRect rect)
 
 void GlMainMenu::rollOut(QPainter *p)
 {
+    /*Ale Buttons werden weggerollt*/
+
     int per = getPercent();
     int angle = int((per/100.)*90);
 
@@ -90,6 +108,10 @@ void GlMainMenu::rollOut(QPainter *p)
 
 void GlMainMenu::setLarge()
 {
+    /*Alles auf 1024 x 768 zoomen
+      - Hintergrundbild scalieren
+      - Alle Buttons vergrössern*/
+
     setGeometry(0,0,1024,768);
     backGroundPixmap = backGroundPixmap.scaled(1024,768);
 

@@ -1,3 +1,6 @@
+/*GlMainMenu ist das Hauptmenü mit den Buttons
+  Player, Interpret ... */
+
 #ifndef GLMAINMENU_H
 #define GLMAINMENU_H
 

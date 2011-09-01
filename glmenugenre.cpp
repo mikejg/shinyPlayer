@@ -8,12 +8,7 @@ GlMenuGenre::GlMenuGenre(GlObject* parent) : GlObject(parent)
 
     listWidget = new GlListWidget(this);
     listWidget->setGeometry(30,20,400,560);
-    listWidget->setImage();
-
-    for(int i = 0; i < 30; i++)
-    {
-        listWidget->insertItem(QString("Text %1").arg(i));
-    }
+    //listWidget->setImage();
 
     buttonMain = new GlButton(this);
     buttonMain->setGeometry(530, 48,200,30);
@@ -76,6 +71,7 @@ void GlMenuGenre::rollIn(QPainter *p)
     int angle = int((per/100.)* -90);
 
     if(per < 0 || per > 100) return;
+        qDebug() << QString("%1").arg(per);
 
     buttonMain->drawImageAt(p, angle, per);
     buttonPlayer->drawImageAt(p, angle, per);

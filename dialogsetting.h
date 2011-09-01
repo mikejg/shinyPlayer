@@ -1,3 +1,5 @@
+/* Ein Dialog zum konvigurieren des Players */
+
 #ifndef DIALOGSETTING_H
 #define DIALOGSETTING_H
 
@@ -32,9 +34,11 @@ private:
     void writeSetting();
 
 public:
-    DialogSetting(QWidget * parent, Qt::WindowFlags f, Settings* s);
+    DialogSetting(QWidget * parent = 0, Qt::WindowFlags f = 0, Settings* s = 0);
 
     bool checkSetting(QStringList*);
+
+    Settings* getGlobalSettings() { return globalSettings; }
 public slots:
 
     void cb_embeddedSql_StateChanged(int state);

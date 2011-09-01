@@ -3,6 +3,7 @@
 GlObject::GlObject(GlObject* parent) : QObject(parent)
 {
     visible = true;
+    percent = -1;
 
     if(parent)
     {
@@ -18,6 +19,7 @@ GlObject::GlObject(GlObject* parent) : QObject(parent)
 
 void GlObject::drawImageAt(QPainter *p, int angle, int per)
 {
+    /*Zeichnet das Image (Screenshot des Objekts) um die X-Achse gedreht*/
     p->save();
     int w = img.width() - int((per/100.) * (img.width() * 0.2));
     int h = img.height() - int((per/100.) * (img.height() * 0.2));
@@ -32,8 +34,26 @@ void GlObject::drawImageAt(QPainter *p, int angle, int per)
     p->restore();
 }
 
+void GlObject::drawImageAtY(QPainter *p, int angle, int per)
+{
+    /*Zeichnet das Image (Screenshot des Objekts) um die Y-Achse gedreht*/
+    p->save();
+    int w = img.width() - int((per/100.) * (img.width() * 0.2));
+    int h = img.height() - int((per/100.) * (img.height() * 0.2));
+
+    QPoint loc = getCenter();
+    QTransform trans;
+     trans.rotate(angle, Qt::YAxis);
+    trans.scale(qreal(w)/img.width(), qreal(h)/img.height());
+    p->setTransform(trans * QTransform().translate(loc.x(),loc.y()),true);
+    QPointF pt(-img.width()/2, -img.height()/2);
+    p->drawImage(pt, img);
+    p->restore();
+}
+
 void GlObject::drawBackGroundPixmap(QPainter* p)
 {
+    /*Zeichnet das Hintergrundbild*/
     if(!backGroundPixmap.isNull())
       {
         p->drawPixmap(QPoint(x,y), backGroundPixmap);
@@ -42,11 +62,13 @@ void GlObject::drawBackGroundPixmap(QPainter* p)
 
 QPoint GlObject::getCenter()
 {
+    /*Liefert den Mittelpunkt des Objects*/
     return QPoint( x + width/2, y + height/2);
 }
 
 QPixmap GlObject::getPixmap()
 {
+    /*Zeichnet sich in ein Pixmap und gibt diese zurück*/
     QPixmap returnPixmap(width, height);
 
     //ins Pixmap zeichnen
@@ -72,5 +94,7 @@ void GlObject::setGeometry(int posX, int posY, int w, int h)
 
 void GlObject::setImage()
 {
+    /*Zeichnet sich selber. Img ist somit ein Screenshot von sich selber
+      der für die Animationen gebrauch wird*/
     img = getPixmap().toImage();
 }

@@ -1,3 +1,6 @@
+/*GlButton ist ein Button ähnlich dem QButton mit einem
+  Signal clicked() */
+
 #ifndef GLBUTTON_H
 #define GLBUTTON_H
 

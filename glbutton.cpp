@@ -3,6 +3,7 @@
 
 GlButton::GlButton(GlObject* parent) : GlObject(parent)
 {
+    /*Standartwerte setzen*/
     fontColor = QColor(255,255,255,128);
     fontSize = 20;
     isPressed = false;
@@ -10,6 +11,7 @@ GlButton::GlButton(GlObject* parent) : GlObject(parent)
 
 void GlButton::draw(QPainter *p)
 {
+    /*Button je nachdem ob gedrückt oder nicht anzeigen*/
     if(isPressed)
         drawBackGroundPixmapPressed(p);
     else
@@ -19,6 +21,7 @@ void GlButton::draw(QPainter *p)
 
 void GlButton::drawBackGroundPixmapPressed(QPainter* p)
 {
+    /*Button mit dem Bild für gedrückt anzeigen*/
     if(!backGroundPixmapPressed.isNull())
       {
         p->drawPixmap(QPoint(getX(),getY()), backGroundPixmapPressed);
@@ -27,6 +30,10 @@ void GlButton::drawBackGroundPixmapPressed(QPainter* p)
 
 void GlButton::drawText(QPainter* p)
 {
+    /*Text auf den Button schreiben
+      - Font von QPainter holen und mit eigenen Werten überschreiben
+      - Den Stift von QPainter mit der Schriftfarbe setzten
+      - Text in ein Rechteck schreiben*/
     if(stringText.isNull()) return;
 
     QFont font = p->font();
@@ -41,12 +48,20 @@ void GlButton::drawText(QPainter* p)
 
 void GlButton::mousePressEvent(QMouseEvent *event)
 {
+    /*Wird ausgeführt wenn die Maus auf den Button gedrückt wird
+      - isPressed auf true setzen
+      - neuzeichnen des Buttons veranlassen*/
     isPressed = true;
     newChildToDraw(this);
 }
 
 void GlButton::mouseReleaseEvent(QMouseEvent *event)
 {
+    /*Wird ausgeführt wenn die Maus auf den Button gelöst wird
+      - isPressed auf false setzen
+      - neuzeichnen des Buttons veranlassen
+      - nach 100 ms wird das Signal clicked gesendet*/
+
     isPressed = false;
     newChildToDraw(this);
 
@@ -55,6 +70,11 @@ void GlButton::mouseReleaseEvent(QMouseEvent *event)
 
 void GlButton::setLarge()
 {
+    /*Alles auf 1024 x 768 zoomen. getCenter liefert den Mittelpunkt des Buttons.
+      Der Mittelpunkt wird verschoben und die hälfte von newWidth wird von X des
+      Mittelpunkts abgezogen. Das ergibt newX. Zum Schluss wird image neu gesetzt.
+      Das brauchen wir für die animationen.*/
+
     fontSize = (int)(fontSize * 1.28);
     int newX, newY, newHeight, newWidth;
     QPoint c;

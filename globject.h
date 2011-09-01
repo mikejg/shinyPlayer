@@ -1,3 +1,8 @@
+/*GlObject ist ähnlich dem QObject eine Basisklasse.
+  Den ganzen Aufwand mit den eigenen Klassen wie GlButton,
+  wird gemacht weil QGLWidget keine GUI-Klassen (QButton etc)
+  aufnehmen kann*/
+
 #ifndef GLOBJECT_H
 #define GLOBJECT_H
 
@@ -31,11 +36,13 @@ public:
 
     virtual void draw(QPainter* p) {Q_UNUSED(p);}
     void drawImageAt(QPainter *p, int angle, int per);
+    void drawImageAtY(QPainter *p, int angle, int per);
     void drawBackGroundPixmap(QPainter* p);
 
     QRect geometry(){return QRect(x,y,width,height);}
     QPoint getCenter();
     int getHeight() { return height; }
+    GlObject* getParent() { return glParent; }
     int getPercent() { return percent; }
     QPixmap getPixmap();
     int getWidth() { return width; }
@@ -52,6 +59,7 @@ public:
     void setImage();
     void setImage(QImage i) { img = i; }
     virtual void setLarge() {}
+    void setPercent(int p) { percent = p; }
     void setVisible(bool b) { visible = b; }
 
 public slots:

@@ -14,7 +14,11 @@ SOURCES += main.cpp \
     gllistwidget.cpp \
     glmainmenu.cpp \
     glmenuinterpret.cpp \
-    glmenugenre.cpp
+    glmenugenre.cpp \
+    glanimation.cpp \
+    glbuttonlist.cpp \
+    database.cpp \
+    db_amarok_embedded.cpp
 HEADERS += mainwindow.h \
     dialogsetting.h \
     settings.h \
@@ -23,6 +27,14 @@ HEADERS += mainwindow.h \
     gllistwidget.h \
     glmainmenu.h \
     glmenuinterpret.h \
-    glmenugenre.h
+    glmenugenre.h \
+    glanimation.h \
+    glbuttonlist.h \
+    database.h \
+    db_amarok_embedded.h
 FORMS += mainwindow.ui
 RESOURCES += pixmaps.qrc
+INCLUDEPATH += /usr/include/mysql
+LIBS += -L/usr/lib/mysql \
+    -lmysqld \
+    -lcrypt

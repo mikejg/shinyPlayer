@@ -5,6 +5,8 @@
 #include <QMessageBox>
 #include <QDebug>
 
+#include "db_amarok_embedded.h"
+
 MainWindow::MainWindow(QWidget * parent, const QGLWidget * shareWidget, Qt::WindowFlags f) :
         QGLWidget(parent, shareWidget, f)
 {
@@ -57,6 +59,10 @@ MainWindow::MainWindow(QWidget * parent, const QGLWidget * shareWidget, Qt::Wind
         }
     }
 
+    set->db = new DB_Amarok_Embedded(this);
+    set->db->setEmbeddedPath(set->embeddedPath);
+    set->db->openDataBase();
+
     mainMenu = new GlMainMenu();
 
     listChilds.append(mainMenu);
@@ -66,11 +72,14 @@ MainWindow::MainWindow(QWidget * parent, const QGLWidget * shareWidget, Qt::Wind
     connect(mainMenu, SIGNAL(update()), this, SLOT(update()));
 
     connect(mainMenu, SIGNAL(buttonGenre_clicked()), this, SLOT(mainMenu_ButtonGenre_clicked()));
-    //connect(mainMenu, SIGNAL(buttonInterpret_clicked()), this, SLOT(mainMenu_ButtonInterpret_clicked()));
+    connect(mainMenu, SIGNAL(buttonInterpret_clicked()), this, SLOT(mainMenu_ButtonInterpret_clicked()));
 
     menuInterpret = new GlMenuInterpret();
     listChilds.append(menuInterpret);
+    menuInterpret->setDatabase(set->db);
+
     connect(menuInterpret, SIGNAL(newChildToDraw(GlObject*)), this, SLOT(newChildToDraw(GlObject*)));
+    connect(menuInterpret, SIGNAL(update()), this, SLOT(update()));
 
     menuGenre = new GlMenuGenre();
     listChilds.append(menuGenre);
@@ -87,6 +96,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::animationDone()
 {
+    /*SLOT: Wird ausgeführt wenn die Animation fertig ist*/
     animation = false;
     timeLine->setDirection(QTimeLine::Forward);
 
@@ -95,10 +105,26 @@ void MainWindow::animationDone()
         drawPuffer.append(menuGenre);
         menuGenre->setVisible(true);
     }
+
+    if(doAnimation == &MainWindow::menuInterpret_RollIn)
+    {
+        drawPuffer.append(menuInterpret);
+        update();
+        menuInterpret->setPercent(-1);
+        menuInterpret->setVisible(true);
+    }
 }
 
 void MainWindow::mainMenu_ButtonGenre_clicked()
 {
+    /*SLOT: Wird ausgeführt wenn auf den Button Genre geklickt wurde
+      - MainMenu abschalten
+      - Alle Verbindungen von TimeLine trennen
+      - den Funktionszeiger doAnimation mit der Funktion mainMenu_RollOut laden
+      - Bool animation auf true setzen (Siehe paintEvent)
+      - Signal neu verbinden
+      - TimeLine starten*/
+
     mainMenu->setVisible(false);
 
     timeLine->disconnect();
@@ -113,13 +139,23 @@ void MainWindow::mainMenu_ButtonGenre_clicked()
 
 void MainWindow::mainMenu_ButtonInterpret_clicked()
 {
+    /*Siehe mainMenu_ButtonGenre_clicked*/
     mainMenu->setVisible(false);
-    menuInterpret->setVisible(true);
-    newChildToDraw(menuInterpret);
+
+    timeLine->disconnect();
+    doAnimation = &MainWindow::mainMenu_RollOut;
+
+    animation = true;
+    connect(timeLine, SIGNAL(frameChanged(int)), mainMenu, SLOT(newFrame(int)));
+    connect(timeLine, SIGNAL(finished()), this, SLOT(setMenuInterpret_RollIn()));
+
+    timeLine->start();
 }
 
 void MainWindow::mousePressEvent(QMouseEvent *event)
 {
+    /*Überprüft ob die Maus über einem Kindobjekt gedrückt wurde und
+      führt die Funktion mousePressEvent des Kindobjekts aus*/
     QRect rect;
     for(int i = 0; i < listChilds.size(); i++)
        {
@@ -133,6 +169,7 @@ void MainWindow::mousePressEvent(QMouseEvent *event)
 
 void MainWindow::mouseReleaseEvent(QMouseEvent *event)
 {
+    /*Siehe mousePressEvent*/
     QRect rect;
     for(int i = 0; i < listChilds.size(); i++)
        {
@@ -146,6 +183,9 @@ void MainWindow::mouseReleaseEvent(QMouseEvent *event)
 
 void MainWindow::newChildToDraw(GlObject * glObject)
 {
+    /*SLOT: Wird ausgeführt wenn ein GlObject das Signal newChildToDraw sendet
+      - das GlObject in die Liste drawPuffer schreiben
+      - update löst ein Neuzeichnen aus (paintEvent)*/
     drawPuffer.append(glObject);
     update();
 }
@@ -158,12 +198,17 @@ void MainWindow::paintEvent(QPaintEvent *e)
     p.setRenderHint(QPainter::SmoothPixmapTransform);
     setAutoFillBackground(false);
 
-    if(!drawPuffer.isEmpty())
+    /*Solange sich in drawPuffer GlObject befinden werden
+      diese geholt und gezeichnet*/
+    while(!drawPuffer.isEmpty())
     {
+        //qDebug("draw paintEvent");
         drawPuffer.at(0)->draw(&p);
         drawPuffer.pop_front();
     }
 
+    /*Ist Bool animation true wird ein schwarzes Rechteck gezeichnet
+      und dann die Funktion in dem Funktionszeiger doAnimation ausgeführt*/
     if(animation)
     {
         p.setClipRect(e->rect());
@@ -174,6 +219,7 @@ void MainWindow::paintEvent(QPaintEvent *e)
 
 void MainWindow::setLarge()
 {
+    /*Alles auf 1024 x 768 zoomen*/
     setGeometry(0,0,1024,768);
 
     for(int i = 0; i < listChilds.size(); i++)
@@ -191,6 +237,26 @@ void MainWindow::setMenuGenre_RollIn()
 
     timeLine->setDirection(QTimeLine::Backward);
     doAnimation = &MainWindow::menuGenre_RollIn;
+
+    timeLine->start();
+}
+
+void MainWindow::setMenuInterpret_RollIn()
+{
+    /*SLOT: Wird ausgeführt wenn sich TimeLine Beendet hat. Wurde in
+            mainMenu_ButtonInterpret_clicked() verbunden.
+            - Alle Verbindungen von TimeLine trennen
+            - Verbindungen neu einrichten
+            - TimeLine auf rückwärts zählen stellen
+            - Funktionzeiger doAnimation mit der Funktion menuInterpret_RollIn laden*/
+
+    timeLine->disconnect();
+
+    connect(timeLine, SIGNAL(frameChanged(int)), menuInterpret, SLOT(newFrame(int)));
+    connect(timeLine, SIGNAL(finished()), this, SLOT(animationDone()));
+
+    timeLine->setDirection(QTimeLine::Backward);
+    doAnimation = &MainWindow::menuInterpret_RollIn;
 
     timeLine->start();
 }

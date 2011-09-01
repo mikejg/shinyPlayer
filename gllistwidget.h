@@ -1,8 +1,11 @@
+/* GlListWidget ist ähnlich dem QListWiget. */
+
 #ifndef GLLISTWIDGET_H
 #define GLLISTWIDGET_H
 
 #include "globject.h"
 #include "glbutton.h"
+#include "glanimation.h"
 
 #include <QColor>
 #include <QPen>
@@ -24,9 +27,12 @@ public:
 
 class GlListWidget : public GlObject
 {
+    Q_OBJECT
+
 private:
     GlButton* buttonDown;
     GlButton* buttonUp;
+    GlAnimation* animation;
 
     QList<GlListWidgetItem *> listItem;
     QColor backGroundColor;
@@ -44,19 +50,27 @@ private:
     int borderRadius;
     int fontSize;
     int startPos;
+    int itemHeight;
 
 public:
     GlListWidget(GlObject* parent = 0);
     void draw(QPainter *p);
     void drawText(QPainter *p, QRect rect, QString text);
 
+    QImage getListImage();
+
     void insertItem(QString text);
+    void insertItem(QStringList l);
 
     void mousePressEvent (QMouseEvent * event);
     void mouseReleaseEvent ( QMouseEvent * event );
 
     void setGeometry(int posX, int posY, int w, int h);
     void setLarge();
+
+signals:
+    void itemClicked(QString);
+
 };
 
 
