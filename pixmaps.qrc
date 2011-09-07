@@ -8,5 +8,14 @@
         <file>images/BackgroundBlack.png</file>
         <file>images/button30.png</file>
         <file>images/button30_pressed.png</file>
+        <file>images/noCover.png</file>
+        <file>images/pictureFlowLeft.png</file>
+        <file>images/pictureFlowLeftPressed.png</file>
+        <file>images/pictureFlowMiddle.png</file>
+        <file>images/pictureFlowMiddlePressed.png</file>
+        <file>images/pictureFlowRigth.png</file>
+        <file>images/pictureFlowRigthPressed.png</file>
+        <file>images/button120.png</file>
+        <file>images/button120Pressed.png</file>
     </qresource>
 </RCC>

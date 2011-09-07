@@ -7,6 +7,8 @@
 #include <QObject>
 #include <QString>
 #include <QStringList>
+#include <QPixmap>
+#include <QDebug>
 
 class Database : public QObject
 {
@@ -19,7 +21,11 @@ public:
     Database(QObject* parent);
 
     QString getEmbeddedPath() { return embeddedPath; }
-    virtual QStringList getInterpreten(QString s);
+    virtual QStringList getAlbenFromInterpret(QString s) { return getStringListFromQuery(s); }
+    virtual QStringList getInterpreten(QString s) { return getStringListFromQuery(s); }
+    virtual QPixmap getCover(QString i, QString a);
+    virtual QString getStringFromQuery(QString queryString);
+    virtual QStringList getStringListFromQuery(QString queryString);
     virtual void openDataBase() {}
 
     void setEmbeddedPath(QString ep) { embeddedPath = ep; }

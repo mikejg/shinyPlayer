@@ -38,6 +38,9 @@ public:
 
 public slots:
     void buttonClicked(QString);
+
+signals:
+    void interpretSelected(QString);
 };
 
 #endif // GLMENUINTERPRET_H

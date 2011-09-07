@@ -22,8 +22,12 @@ private:
     MYSQL_ROW record;
 public:
     DB_Amarok_Embedded(QObject* parent);
-
+    QStringList getAlbenFromInterpret(QString s);
+    QPixmap getCover(QString i, QString a);
     QStringList getInterpreten(QString s);
+    QString getStringFromQuery(QString queryString);
+    QStringList getStringListFromQuery(QString queryString);
+
     void openDataBase();
 
 

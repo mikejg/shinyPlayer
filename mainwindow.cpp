@@ -75,16 +75,28 @@ MainWindow::MainWindow(QWidget * parent, const QGLWidget * shareWidget, Qt::Wind
     connect(mainMenu, SIGNAL(buttonInterpret_clicked()), this, SLOT(mainMenu_ButtonInterpret_clicked()));
 
     menuInterpret = new GlMenuInterpret();
+    menuInterpret->setVisible(false);
     listChilds.append(menuInterpret);
     menuInterpret->setDatabase(set->db);
 
     connect(menuInterpret, SIGNAL(newChildToDraw(GlObject*)), this, SLOT(newChildToDraw(GlObject*)));
     connect(menuInterpret, SIGNAL(update()), this, SLOT(update()));
+    connect(menuInterpret, SIGNAL(interpretSelected(QString)), this, SLOT(interpretSelected(QString)));
 
     menuGenre = new GlMenuGenre();
     listChilds.append(menuGenre);
+    menuGenre->setVisible(false);
+
     connect(menuGenre, SIGNAL(newChildToDraw(GlObject*)), this, SLOT(newChildToDraw(GlObject*)));
     connect(menuGenre, SIGNAL(update()), this, SLOT(update()));
+
+    menuAlben = new GlMenuAlben();
+    menuAlben->setVisible(false);
+    listChilds.append(menuAlben);
+    menuAlben->setDatabase(set->db);
+
+    connect(menuAlben, SIGNAL(newChildToDraw(GlObject*)), this, SLOT(newChildToDraw(GlObject*)));
+    connect(menuAlben, SIGNAL(update()), this, SLOT(update()));
 
     //setLarge();
 }
@@ -113,6 +125,13 @@ void MainWindow::animationDone()
         menuInterpret->setPercent(-1);
         menuInterpret->setVisible(true);
     }
+}
+
+void MainWindow::interpretSelected(QString interpret)
+{
+    menuAlben->newInterpret(interpret);
+    menuInterpret->setVisible(false);
+    menuAlben->setVisible(true);
 }
 
 void MainWindow::mainMenu_ButtonGenre_clicked()

@@ -8,7 +8,7 @@ GlMenuInterpret::GlMenuInterpret(GlObject* parent) : GlObject(parent)
 
     listWidget = new GlListWidget(this);
     listWidget->setGeometry(30,20,400,560);
-
+    connect(listWidget, SIGNAL(itemClicked(QString)), this, SIGNAL(interpretSelected(QString)));
     buttonMain = new GlButton(this);
     buttonMain->setGeometry(530, 48,200,30);
     buttonMain->setBackGroundPixmap(QPixmap(":/images/button.png"));

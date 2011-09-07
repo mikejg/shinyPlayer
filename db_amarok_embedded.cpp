@@ -45,22 +45,75 @@ void DB_Amarok_Embedded::openDataBase()
     mysql_real_connect(mysql, NULL,NULL,NULL, "amarok", 0,NULL,0);
 }
 
+QStringList DB_Amarok_Embedded::getAlbenFromInterpret(QString s)
+{
+    s = s.replace("'", "''");
+    QString queryString = "SELECT DISTINCT albums.name FROM tracks, albums, artists WHERE "
+                  "tracks.album = albums.id AND tracks.artist = artists.id "
+                  "AND artists.name = '" + s + "'";
+
+     return getStringListFromQuery(queryString);
+}
+
+QPixmap DB_Amarok_Embedded::getCover(QString i, QString a)
+{
+    i = i.replace("'", "''");
+    a = a.replace("'", "''");
+    QPixmap pm;
+    QString queryString = "SELECT images.path FROM albums "
+                          "INNER JOIN artists ON albums.artist = artists.id "
+                          "INNER JOIN images ON albums.image = images.id "
+                          "WHERE "
+                          "artists.name = '" + i + "' "
+                          "AND "
+                          "albums.name = '" + a + "' ";
+    QString imagePath = getStringFromQuery(queryString);
+    qDebug() << imagePath;
+    if(imagePath.isEmpty())
+        pm.load(":/images/noCover.png");
+    else
+        pm.load(imagePath);
+
+    return pm;
+}
+
 QStringList DB_Amarok_Embedded::getInterpreten(QString s)
 {
-    /*Liefert eine Liste mit allen Interpreten mit dem Anfangsbuchstaben*/
-
-    QString inter;
-    QStringList stringListInterpret;
+    s = s.replace("'", "''");
     QString queryString = "SELECT name FROM artists WHERE name LIKE '" + s + "%'";
+    return getStringListFromQuery(queryString);
+}
+
+QString DB_Amarok_Embedded::getStringFromQuery(QString queryString)
+{
+    QString returnString;
+    const char* query = qstrdup( QString( "%1" ).arg( queryString ).toAscii().data() );
+    mysql_query(mysql, query);
+    results = mysql_store_result(mysql);
+
+    if(results && (record = mysql_fetch_row(results)))
+    {
+        returnString = record[0];
+    }
+    mysql_free_result(results);
+
+    return returnString;
+}
+
+QStringList DB_Amarok_Embedded::getStringListFromQuery(QString queryString)
+{
+    /*Liefert eine Liste aller Treffer aus der Datenbankanfrage in queryString
+      Siehe auch get Interpret(QString s)*/
+
+    QStringList stringListResults;
     const char* query = qstrdup( QString( "%1" ).arg( queryString ).toAscii().data() );
     mysql_query(mysql, query);
     results = mysql_store_result(mysql);
     while((record = mysql_fetch_row(results)))
          {
-            stringListInterpret << record[0];
-            inter = record[0];
+            stringListResults << record[0];
          }
 
     mysql_free_result(results);
-    return stringListInterpret;
+    return stringListResults;
 }

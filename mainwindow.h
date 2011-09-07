@@ -11,6 +11,7 @@
 #include "glmainmenu.h"
 #include "glmenuinterpret.h"
 #include "glmenugenre.h"
+#include "glmenualben.h"
 #include "globject.h"
 
 class MainWindow : public QGLWidget {
@@ -28,6 +29,7 @@ private:
     GlMainMenu* mainMenu;
     GlMenuGenre* menuGenre;
     GlMenuInterpret* menuInterpret;
+    GlMenuAlben* menuAlben;
 
 public:
     MainWindow(QWidget *parent = 0, const QGLWidget * shareWidget = 0, Qt::WindowFlags f = 0 );
@@ -42,6 +44,8 @@ public:
 
 public slots:
     void animationDone();
+
+    void interpretSelected(QString);
 
     void newChildToDraw(GlObject*);
 
