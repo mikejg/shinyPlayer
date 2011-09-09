@@ -109,7 +109,7 @@ void GlPictureFlow::draw_backward(QPainter* p)
         point.setY(pt0.y());
 
         size = int((getPercent()/100.) * (sizeSmall));
-        drawImageAt(p, point, images.at(i), size,size*1.5,-50,0);
+        t_drawImageAt(p, point, images.at(i), size,size*1.5,-50,0);
       }
     i = centerImage - 4;
     if(i > -1 && i < images.size())
@@ -117,7 +117,7 @@ void GlPictureFlow::draw_backward(QPainter* p)
         dist = int((getPercent()/100.) * (distShort));
         point.setX(pt1.x() + dist);
         point.setY(pt1.y());
-        drawImageAt(p, point, images.at(i), sizeSmall, sizeSmall*1.5,-50,0);
+        t_drawImageAt(p, point, images.at(i), sizeSmall, sizeSmall*1.5,-50,0);
       }
     i = centerImage - 3;
     if(i > -1 && i < images.size())
@@ -125,7 +125,7 @@ void GlPictureFlow::draw_backward(QPainter* p)
         dist = int((getPercent()/100.) * (distShort));
         point.setX(pt2.x() + dist);
         point.setY(pt2.y());
-        drawImageAt(p, point, images.at(i), sizeSmall, sizeSmall*1.5,-50,0);
+        t_drawImageAt(p, point, images.at(i), sizeSmall, sizeSmall*1.5,-50,0);
       }
     i = centerImage -2;
     if(i > -1 && i < images.size())
@@ -133,7 +133,7 @@ void GlPictureFlow::draw_backward(QPainter* p)
         dist = int((getPercent()/100.) * (distShort));
         point.setX(pt3.x() + dist);
         point.setY(pt3.y());
-        drawImageAt(p, point, images.at(i), sizeSmall, sizeSmall*1.5,-50,0);
+        t_drawImageAt(p, point, images.at(i), sizeSmall, sizeSmall*1.5,-50,0);
       }
 
     i = centerImage - 1;
@@ -145,7 +145,7 @@ void GlPictureFlow::draw_backward(QPainter* p)
 
         size = int((getPercent()/100.) * (sizeBig - sizeSmall)) + sizeSmall;
         angle = -50 + int((getPercent()/100.) * 50);
-        drawImageAt(p, point, images.at(i), size,size*1.5,angle,0);
+        t_drawImageAt(p, point, images.at(i), size,size*1.5,angle,0);
       }
 
     i = centerImage + 4;
@@ -156,7 +156,7 @@ void GlPictureFlow::draw_backward(QPainter* p)
         point.setY(pt7.y());
 
         size = sizeSmall - int((getPercent()/100.) * (sizeSmall));
-        drawImageAt(p, point, images.at(i), size,size*1.5,50,0);
+        t_drawImageAt(p, point, images.at(i), size,size*1.5,50,0);
       }
 
     i = centerImage + 3;
@@ -165,7 +165,7 @@ void GlPictureFlow::draw_backward(QPainter* p)
         dist = int((getPercent()/100.) * (distShort));
         point.setX(pt8.x() + dist);
         point.setY(pt8.y());
-        drawImageAt(p, point, images.at(i), sizeSmall, sizeSmall*1.5,50,0);
+        t_drawImageAt(p, point, images.at(i), sizeSmall, sizeSmall*1.5,50,0);
       }
 
     i = centerImage + 2;
@@ -174,7 +174,7 @@ void GlPictureFlow::draw_backward(QPainter* p)
         dist = int((getPercent()/100.) * (distShort));
         point.setX(pt9.x() + dist);
         point.setY(pt9.y());
-        drawImageAt(p, point, images.at(i), sizeSmall, sizeSmall*1.5,50,0);
+        t_drawImageAt(p, point, images.at(i), sizeSmall, sizeSmall*1.5,50,0);
       }
 
     i = centerImage + 1;
@@ -183,7 +183,7 @@ void GlPictureFlow::draw_backward(QPainter* p)
         dist = int((getPercent()/100.) * (distShort));
         point.setX(pt10.x() + dist);
         point.setY(pt10.y());
-        drawImageAt(p, point, images.at(i), sizeSmall, sizeSmall*1.5,50,0);
+        t_drawImageAt(p, point, images.at(i), sizeSmall, sizeSmall*1.5,50,0);
     }
 
     i = centerImage;
@@ -196,7 +196,7 @@ void GlPictureFlow::draw_backward(QPainter* p)
         angle = int((getPercent()/100.) * (50));
 
         size = int((getPercent()/100.) * (sizeSmall - sizeBig)) + sizeBig;
-        drawImageAt(p, point, images.at(i), size,size*1.5,angle,0);
+        t_drawImageAt(p, point, images.at(i), size,size*1.5,angle,0);
       }
 }
 
@@ -224,7 +224,7 @@ void GlPictureFlow::draw_forward(QPainter *p)
         point.setY(pt1.y());
 
         size = sizeSmall - int((getPercent()/100.) * (sizeSmall));
-        drawImageAt(p, point, images.at(i), size,size*1.5,-50,0);
+        t_drawImageAt(p, point, images.at(i), size,size*1.5,-50,0);
       }
 
     i = centerImage - 3;
@@ -233,7 +233,7 @@ void GlPictureFlow::draw_forward(QPainter *p)
         dist = int((getPercent()/100.) * (-(distShort)));
         point.setX(pt2.x() + dist);
         point.setY(pt2.y());
-        drawImageAt(p, point, images.at(i), sizeSmall,sizeSmall*1.5,-50,0);
+        t_drawImageAt(p, point, images.at(i), sizeSmall,sizeSmall*1.5,-50,0);
       }
 
     i = centerImage - 2;
@@ -242,7 +242,7 @@ void GlPictureFlow::draw_forward(QPainter *p)
         dist = int((getPercent()/100.) * (-(distShort)));
         point.setX(pt3.x() + dist);
         point.setY(pt3.y());
-        drawImageAt(p, point, images.at(i), sizeSmall,sizeSmall*1.5,-50,0);
+        t_drawImageAt(p, point, images.at(i), sizeSmall,sizeSmall*1.5,-50,0);
       }
 
     i = centerImage - 1;
@@ -251,7 +251,7 @@ void GlPictureFlow::draw_forward(QPainter *p)
         dist = int((getPercent()/100.) * (-(distShort)));
         point.setX(pt4.x() + dist);
         point.setY(pt4.y());
-        drawImageAt(p, point, images.at(i), sizeSmall,sizeSmall*1.5,-50,0);
+        t_drawImageAt(p, point, images.at(i), sizeSmall,sizeSmall*1.5,-50,0);
       }
 
     i = centerImage;
@@ -264,7 +264,7 @@ void GlPictureFlow::draw_forward(QPainter *p)
         angle = int((getPercent()/100.) * (-50));
 
         size = int((getPercent()/100.) * (sizeSmall - sizeBig)) + sizeBig;
-        drawImageAt(p, point, images.at(i), size,size*1.5,angle,0);
+        t_drawImageAt(p, point, images.at(i), size,size*1.5,angle,0);
       }
 
     i = centerImage + 5;
@@ -275,7 +275,7 @@ void GlPictureFlow::draw_forward(QPainter *p)
         point.setY(pt6.y());
 
         size = int((getPercent()/100.) * (sizeSmall));
-        drawImageAt(p, point, images.at(i), size,size*1.5,50,0);
+        t_drawImageAt(p, point, images.at(i), size,size*1.5,50,0);
       }
 
     i = centerImage + 4;
@@ -284,7 +284,7 @@ void GlPictureFlow::draw_forward(QPainter *p)
         dist = int((getPercent()/100.) * (-(distShort)));
         point.setX(pt7.x() + dist);
         point.setY(pt7.y());
-        drawImageAt(p, point, images.at(i), sizeSmall,sizeSmall*1.5, 50,0);
+        t_drawImageAt(p, point, images.at(i), sizeSmall,sizeSmall*1.5, 50,0);
       }
 
     i = centerImage + 3;
@@ -293,7 +293,7 @@ void GlPictureFlow::draw_forward(QPainter *p)
         dist = int((getPercent()/100.) * (-(distShort)));
         point.setX(pt8.x() + dist);
         point.setY(pt8.y());
-        drawImageAt(p, point, images.at(i), sizeSmall,sizeSmall*1.5, 50,0);
+        t_drawImageAt(p, point, images.at(i), sizeSmall,sizeSmall*1.5, 50,0);
       }
 
     i = centerImage + 2;
@@ -302,7 +302,7 @@ void GlPictureFlow::draw_forward(QPainter *p)
         dist = int((getPercent()/100.) * (-(distShort)));
         point.setX(pt9.x() + dist);
         point.setY(pt9.y());
-        drawImageAt(p, point, images.at(i), sizeSmall,sizeSmall*1.5,50,0);
+        t_drawImageAt(p, point, images.at(i), sizeSmall,sizeSmall*1.5,50,0);
       }
 
     i = centerImage + 1;
@@ -314,11 +314,11 @@ void GlPictureFlow::draw_forward(QPainter *p)
 
         size = int((getPercent()/100.) * (sizeBig - sizeSmall)) + sizeSmall;
         angle = 50 - int((getPercent()/100.) * 50);
-        drawImageAt(p, point, images.at(i), size,size*1.5,angle,0);
+        t_drawImageAt(p, point, images.at(i), size,size*1.5,angle,0);
       }
 }
 
-void GlPictureFlow::drawImageAt(QPainter *p, const QPoint &loc,const QImage &image, int w, int h, int angle, int posDif)
+void GlPictureFlow::t_drawImageAt(QPainter *p, const QPoint &loc,const QImage &image, int w, int h, int angle, int posDif)
 {
     p->save();
     QTransform trans;
@@ -379,8 +379,12 @@ void GlPictureFlow::mousePressEvent(QMouseEvent *event)
 {
     /*Überprüft ob die Maus über einem Kindobjekt gedrückt wurde und
       führt die Funktion mousePressEvent des Kindobjekts aus*/
+    QRect rect(325,40,150,150);
+    if(rect.contains(event->pos()))
+    {
+        albumClicked(alben.at(centerImage));
+    }
 
-    QRect rect;
     for(int i = 0; i < listChilds.size(); i++)
        {
          rect = listChilds.at(i)->geometry();

@@ -10,8 +10,12 @@ class GlMenuAlben : public GlObject
     Q_OBJECT
 private:
     GlPictureFlow* pictureFlow;
+    GlButton* buttonMain;
+    GlButton* buttonPlayer;
+    GlButton* buttonInterpret;
     Database* db;
     QColor backGroundColor;
+    QString stringInterpret;
 
 public:
     GlMenuAlben(GlObject* parent = 0);
@@ -23,8 +27,24 @@ public:
 
     void newInterpret(QString interpret);
 
+    void rollIn(QPainter* p);
+    void rollOut(QPainter* p);
+
     void setDatabase(Database* d) { db = d; }
     void setLarge();
+
+public slots:
+    void albumSelected(QString);
+    void buttonInterpret_clicked();
+    void buttonMain_clicked();
+    void buttonPlayer_clicked();
+
+signals:
+    void backToInterpret();
+    void backToMain();
+    void backToPlayer();
+    void newAlbumSelected(QString, QString);
+
 };
 
 #endif // GLMENUALBEN_H

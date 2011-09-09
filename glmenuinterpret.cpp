@@ -9,12 +9,14 @@ GlMenuInterpret::GlMenuInterpret(GlObject* parent) : GlObject(parent)
     listWidget = new GlListWidget(this);
     listWidget->setGeometry(30,20,400,560);
     connect(listWidget, SIGNAL(itemClicked(QString)), this, SIGNAL(interpretSelected(QString)));
+
     buttonMain = new GlButton(this);
     buttonMain->setGeometry(530, 48,200,30);
     buttonMain->setBackGroundPixmap(QPixmap(":/images/button.png"));
     buttonMain->setBackGroundPixmapPressed(QPixmap(":/images/button_pressed.png"));
     buttonMain->setText("Main");
     buttonMain->setImage();
+    connect(buttonMain, SIGNAL(clicked()), this, SIGNAL(buttonMainClicked()));
 
     buttonPlayer = new GlButton(this);
     buttonPlayer->setGeometry(530,108,200,30);
@@ -22,6 +24,7 @@ GlMenuInterpret::GlMenuInterpret(GlObject* parent) : GlObject(parent)
     buttonPlayer->setBackGroundPixmapPressed(QPixmap(":/images/button_pressed.png"));
     buttonPlayer->setText("Player");
     buttonPlayer->setImage();
+    connect(buttonPlayer, SIGNAL(clicked()), this, SIGNAL(buttonPlayerClicked()));
 
     buttonList = new GlButtonList(this);
     buttonList->setGeometry(530,160,200,390);
@@ -89,6 +92,20 @@ void GlMenuInterpret::rollIn(QPainter *p)
 
     int per = getPercent();
     int angle = int((per/100.)* -90);
+
+    if(per < 0 || per > 100) return;
+
+
+    buttonMain->drawImageAt(p, angle, per);
+    buttonPlayer->drawImageAt(p, angle, per);
+    listWidget->drawImageAt(p, angle, per);
+    buttonList->drawImageAt(p, angle, per);
+}
+
+void GlMenuInterpret::rollOut(QPainter *p)
+{
+    int per = getPercent();
+    int angle = int((per/100.) * 90);
 
     if(per < 0 || per > 100) return;
 

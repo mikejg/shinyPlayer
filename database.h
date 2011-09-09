@@ -9,6 +9,9 @@
 #include <QStringList>
 #include <QPixmap>
 #include <QDebug>
+#include <QList>
+
+#include "metapaket.h"
 
 class Database : public QObject
 {
@@ -26,6 +29,7 @@ public:
     virtual QPixmap getCover(QString i, QString a);
     virtual QString getStringFromQuery(QString queryString);
     virtual QStringList getStringListFromQuery(QString queryString);
+    virtual QList<MetaPaket> getTracksFromAlbum(QString interpret, QString album);
     virtual void openDataBase() {}
 
     void setEmbeddedPath(QString ep) { embeddedPath = ep; }

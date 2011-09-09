@@ -32,6 +32,7 @@ public:
     void mouseReleaseEvent ( QMouseEvent * event );
 
     void rollIn(QPainter *p);
+    void rollOut(QPainter *p);
 
     void setDatabase(Database* d) { db = d; }
     void setLarge();
@@ -41,6 +42,8 @@ public slots:
 
 signals:
     void interpretSelected(QString);
+    void buttonMainClicked();
+    void buttonPlayerClicked();
 };
 
 #endif // GLMENUINTERPRET_H

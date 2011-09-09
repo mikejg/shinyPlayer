@@ -50,7 +50,7 @@ public:
     void draw(QPainter *p);
     void draw_backward(QPainter* p);
     void draw_forward(QPainter* p);
-    void drawImageAt(QPainter *p, const QPoint &loc,const QImage &imgage, int w, int h, int angle,int posDif);
+    void t_drawImageAt(QPainter *p, const QPoint &loc,const QImage &imgage, int w, int h, int angle,int posDif);
 
     void (GlPictureFlow::*for_backward)(QPainter* p);
 
@@ -68,6 +68,9 @@ public slots:
     void newPercent(int per) { setPercent(per); this->newChildToDraw(this); }
     void startBackward();
     void startForward();
+
+signals:
+    void albumClicked(QString);
 };
 
 #endif // GLPICTUREFLOW_H

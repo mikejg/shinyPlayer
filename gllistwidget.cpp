@@ -146,6 +146,7 @@ void GlListWidget::insertItem(QStringList l)
         item->setText(l.at(i));
         listItem.append(item);
     }
+    setImage();
     animation->setImage2(getListImage());
     animation->startRotation();
 }

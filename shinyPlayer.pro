@@ -20,7 +20,10 @@ SOURCES += main.cpp \
     database.cpp \
     db_amarok_embedded.cpp \
     glmenualben.cpp \
-    glpictureflow.cpp
+    glpictureflow.cpp \
+    glmenuplayer.cpp \
+    gltracklist.cpp \
+    play_engine.cpp
 HEADERS += mainwindow.h \
     dialogsetting.h \
     settings.h \
@@ -35,7 +38,11 @@ HEADERS += mainwindow.h \
     database.h \
     db_amarok_embedded.h \
     glmenualben.h \
-    glpictureflow.h
+    glpictureflow.h \
+    glmenuplayer.h \
+    gltracklist.h \
+    metapaket.h \
+    play_engine.h
 FORMS += mainwindow.ui
 RESOURCES += pixmaps.qrc
 INCLUDEPATH += /usr/include/mysql

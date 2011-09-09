@@ -63,6 +63,8 @@ MainWindow::MainWindow(QWidget * parent, const QGLWidget * shareWidget, Qt::Wind
     set->db->setEmbeddedPath(set->embeddedPath);
     set->db->openDataBase();
 
+    playEngine = new Play_Engine(this);
+
     mainMenu = new GlMainMenu();
 
     listChilds.append(mainMenu);
@@ -73,6 +75,7 @@ MainWindow::MainWindow(QWidget * parent, const QGLWidget * shareWidget, Qt::Wind
 
     connect(mainMenu, SIGNAL(buttonGenre_clicked()), this, SLOT(mainMenu_ButtonGenre_clicked()));
     connect(mainMenu, SIGNAL(buttonInterpret_clicked()), this, SLOT(mainMenu_ButtonInterpret_clicked()));
+    connect(mainMenu, SIGNAL(buttonPlayer_clicked()), this, SLOT(mainMenu_ButtonPlayer_clicked()));
 
     menuInterpret = new GlMenuInterpret();
     menuInterpret->setVisible(false);
@@ -82,6 +85,8 @@ MainWindow::MainWindow(QWidget * parent, const QGLWidget * shareWidget, Qt::Wind
     connect(menuInterpret, SIGNAL(newChildToDraw(GlObject*)), this, SLOT(newChildToDraw(GlObject*)));
     connect(menuInterpret, SIGNAL(update()), this, SLOT(update()));
     connect(menuInterpret, SIGNAL(interpretSelected(QString)), this, SLOT(interpretSelected(QString)));
+    connect(menuInterpret, SIGNAL(buttonMainClicked()), this, SLOT(menuInterpret_ButtonMain_clicked()));
+    connect(menuInterpret, SIGNAL(buttonPlayerClicked()), this, SLOT(menuInterpret_ButtonPlayer_clicked()));
 
     menuGenre = new GlMenuGenre();
     listChilds.append(menuGenre);
@@ -97,7 +102,20 @@ MainWindow::MainWindow(QWidget * parent, const QGLWidget * shareWidget, Qt::Wind
 
     connect(menuAlben, SIGNAL(newChildToDraw(GlObject*)), this, SLOT(newChildToDraw(GlObject*)));
     connect(menuAlben, SIGNAL(update()), this, SLOT(update()));
+    connect(menuAlben, SIGNAL(newAlbumSelected(QString,QString)), this, SLOT(albumSelected(QString, QString)));
+    connect(menuAlben, SIGNAL(backToInterpret()), this, SLOT(menuAlben_ButtonInterpret_clicked()));
+    connect(menuAlben, SIGNAL(backToMain()), this, SLOT(menuAlben_ButtonMain_clicked()));
+    connect(menuAlben, SIGNAL(backToPlayer()), this, SLOT(menuAlben_ButtonPlayer_clicked()));
 
+    menuPlayer = new GlMenuPlayer();
+    menuPlayer->setVisible(false);
+    listChilds.append(menuPlayer);
+    menuPlayer->setDatabase(set->db);
+    menuPlayer->setPlayEngine(playEngine);
+
+    connect(menuPlayer, SIGNAL(newChildToDraw(GlObject*)), this, SLOT(newChildToDraw(GlObject*)));
+    connect(menuPlayer, SIGNAL(update()), this, SLOT(update()));
+    connect(menuPlayer, SIGNAL(buttonMain_clicked()), this, SLOT(menuPlayer_ButtonMain_clicked()));
     //setLarge();
 }
 
@@ -106,11 +124,25 @@ MainWindow::~MainWindow()
 
 }
 
+void MainWindow::albumSelected(QString interpret, QString album)
+{
+    //menuAlben->setVisible(false);
+    //menuPlayer->setVisible(true);
+    menuPlayer->insertNewAlbum(interpret, album);
+    //drawPuffer.append(menuPlayer);
+    //update();
+}
+
 void MainWindow::animationDone()
 {
     /*SLOT: Wird ausgeführt wenn die Animation fertig ist*/
     animation = false;
     timeLine->setDirection(QTimeLine::Forward);
+
+    menuInterpret->setPercent(-1);
+    mainMenu->setPercent(-1);
+    menuAlben->setPercent(-1);
+    menuPlayer->setPercent(-1);
 
     if(doAnimation == &MainWindow::menuGenre_RollIn)
     {
@@ -122,16 +154,45 @@ void MainWindow::animationDone()
     {
         drawPuffer.append(menuInterpret);
         update();
-        menuInterpret->setPercent(-1);
         menuInterpret->setVisible(true);
+    }
+
+    if(doAnimation == &MainWindow::menuAlben_RollIn)
+    {
+        drawPuffer.append(menuAlben);
+        update();
+        menuAlben->setVisible(true);
+    }
+
+    if(doAnimation == &MainWindow::mainMenu_RollIn)
+    {
+        drawPuffer.append(mainMenu);
+        update();
+        mainMenu->setVisible(true);
+    }
+
+    if(doAnimation == &MainWindow::menuPlayer_RollIn)
+    {
+        drawPuffer.append(menuPlayer);
+        update();
+        menuPlayer->setVisible(true);
     }
 }
 
 void MainWindow::interpretSelected(QString interpret)
 {
-    menuAlben->newInterpret(interpret);
     menuInterpret->setVisible(false);
-    menuAlben->setVisible(true);
+
+    menuAlben->newInterpret(interpret);
+
+    timeLine->disconnect();
+    doAnimation = &MainWindow::menuInterpret_RollOut;
+
+    animation = true;
+    connect(timeLine, SIGNAL(frameChanged(int)), menuInterpret, SLOT(newFrame(int)));
+    connect(timeLine, SIGNAL(finished()), this, SLOT(setMenuAlben_RollIn()));
+
+    timeLine->start();
 }
 
 void MainWindow::mainMenu_ButtonGenre_clicked()
@@ -167,6 +228,111 @@ void MainWindow::mainMenu_ButtonInterpret_clicked()
     animation = true;
     connect(timeLine, SIGNAL(frameChanged(int)), mainMenu, SLOT(newFrame(int)));
     connect(timeLine, SIGNAL(finished()), this, SLOT(setMenuInterpret_RollIn()));
+
+    timeLine->start();
+}
+
+void MainWindow::mainMenu_ButtonPlayer_clicked()
+{
+    /*Siehe mainMenu_ButtonGenre_clicked*/
+    mainMenu->setVisible(false);
+    menuPlayer->setImage();
+
+    timeLine->disconnect();
+    doAnimation = &MainWindow::mainMenu_RollOut;
+
+    animation = true;
+    connect(timeLine, SIGNAL(frameChanged(int)), mainMenu, SLOT(newFrame(int)));
+    connect(timeLine, SIGNAL(finished()), this, SLOT(setMenuPlayer_RollIn()));
+
+    timeLine->start();
+}
+
+void MainWindow::menuAlben_ButtonInterpret_clicked()
+{
+    menuAlben->setVisible(false);
+
+    timeLine->disconnect();
+    doAnimation = &MainWindow::menuAlben_RollOut;
+
+    animation = true;
+    connect(timeLine, SIGNAL(frameChanged(int)), menuAlben, SLOT(newFrame(int)));
+    connect(timeLine, SIGNAL(finished()), this, SLOT(setMenuInterpret_RollIn()));
+
+    timeLine->start();
+}
+
+void MainWindow::menuAlben_ButtonPlayer_clicked()
+{
+    menuPlayer->setImage();
+
+    menuAlben->setVisible(false);
+
+    timeLine->disconnect();
+    doAnimation = &MainWindow::menuAlben_RollOut;
+
+    animation = true;
+    connect(timeLine, SIGNAL(frameChanged(int)), menuAlben, SLOT(newFrame(int)));
+    connect(timeLine, SIGNAL(finished()), this, SLOT(setMenuPlayer_RollIn()));
+
+    timeLine->start();
+}
+
+void MainWindow::menuAlben_ButtonMain_clicked()
+{
+    menuAlben->setVisible(false);
+
+    timeLine->disconnect();
+    doAnimation = &MainWindow::menuAlben_RollOut;
+
+    animation = true;
+    connect(timeLine, SIGNAL(frameChanged(int)), menuAlben, SLOT(newFrame(int)));
+    connect(timeLine, SIGNAL(finished()), this, SLOT(setMainMenu_RollIn()));
+    timeLine->start();
+}
+
+void MainWindow::menuInterpret_ButtonMain_clicked()
+{
+    menuInterpret->setVisible(false);
+
+    timeLine->disconnect();
+    doAnimation = &MainWindow::menuInterpret_RollOut;
+
+    animation = true;
+    connect(timeLine, SIGNAL(frameChanged(int)), menuInterpret, SLOT(newFrame(int)));
+    connect(timeLine, SIGNAL(finished()), this, SLOT(setMainMenu_RollIn()));
+
+    timeLine->start();
+}
+
+void MainWindow::menuInterpret_ButtonPlayer_clicked()
+{
+    menuPlayer->setImage();
+
+    menuInterpret->setVisible(false);
+
+    timeLine->disconnect();
+    doAnimation = &MainWindow::menuInterpret_RollOut;
+
+    animation = true;
+    connect(timeLine, SIGNAL(frameChanged(int)), menuInterpret, SLOT(newFrame(int)));
+    connect(timeLine, SIGNAL(finished()), this, SLOT(setMenuPlayer_RollIn()));
+
+    timeLine->start();
+}
+
+void MainWindow::menuPlayer_ButtonMain_clicked()
+{
+    menuPlayer->setImage();
+
+    menuPlayer->setVisible(false);
+
+    timeLine->disconnect();
+    doAnimation = &MainWindow::menuPlayer_RollOut;
+
+    animation = true;
+    connect(timeLine, SIGNAL(frameChanged(int)), menuPlayer, SLOT(newFrame(int)));
+    connect(timeLine, SIGNAL(finished()), this, SLOT(setMainMenu_RollIn()));
 
     timeLine->start();
 }
@@ -247,6 +413,32 @@ void MainWindow::setLarge()
     }
 }
 
+void MainWindow::setMainMenu_RollIn()
+{
+    timeLine->disconnect();
+
+    connect(timeLine, SIGNAL(frameChanged(int)), mainMenu, SLOT(newFrame(int)));
+    connect(timeLine, SIGNAL(finished()), this, SLOT(animationDone()));
+
+    timeLine->setDirection(QTimeLine::Backward);
+    doAnimation = &MainWindow::mainMenu_RollIn;
+
+    timeLine->start();
+}
+
+void MainWindow::setMenuAlben_RollIn()
+{
+    timeLine->disconnect();
+
+    connect(timeLine, SIGNAL(frameChanged(int)), menuAlben, SLOT(newFrame(int)));
+    connect(timeLine, SIGNAL(finished()), this, SLOT(animationDone()));
+
+    timeLine->setDirection(QTimeLine::Backward);
+    doAnimation = &MainWindow::menuAlben_RollIn;
+
+    timeLine->start();
+}
+
 void MainWindow::setMenuGenre_RollIn()
 {
     timeLine->disconnect();
@@ -276,6 +468,19 @@ void MainWindow::setMenuInterpret_RollIn()
 
     timeLine->setDirection(QTimeLine::Backward);
     doAnimation = &MainWindow::menuInterpret_RollIn;
+
+    timeLine->start();
+}
+
+void MainWindow::setMenuPlayer_RollIn()
+{
+    timeLine->disconnect();
+
+    connect(timeLine, SIGNAL(frameChanged(int)), menuPlayer, SLOT(newFrame(int)));
+    connect(timeLine, SIGNAL(finished()), this, SLOT(animationDone()));
+
+    timeLine->setDirection(QTimeLine::Backward);
+    doAnimation = &MainWindow::menuPlayer_RollIn;
 
     timeLine->start();
 }

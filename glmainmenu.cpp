@@ -5,7 +5,14 @@ GlMainMenu::GlMainMenu(GlObject* parent) : GlObject(parent)
     setBackGroundPixmap(QPixmap(":/images/main.png"));
     setGeometry(0,0,800,600);
 
+    balkenOben = QPixmap(":/images/mainBalkenOben.png");
+    yBalkenOben = 145;
+
+    balkenUnten = QPixmap(":/images/mainBalkenUnten.png");
+    yBalkenUnten = 470;
+
     buttonPlayer = newButton(QString("Player"), QRect(180,210,200,30));
+    connect(buttonPlayer, SIGNAL(clicked()), this, SIGNAL(buttonPlayer_clicked()));
 
     buttonGenre = newButton(QString("Genre"), QRect(180,260,200,30));
     connect(buttonGenre, SIGNAL(clicked()), this, SIGNAL(buttonGenre_clicked()));
@@ -30,7 +37,12 @@ void GlMainMenu::draw(QPainter *p)
       - Hintergrundbild zeichnen
       - Alle Buttons zeichnen*/
 
-    drawBackGroundPixmap(p);
+    //drawBackGroundPixmap(p);
+    p->setBrush(Qt::black);
+    p->drawRect(geometry());
+
+    p->drawPixmap(0,yBalkenOben - balkenOben.height()/2, balkenOben);
+    p->drawPixmap(0,yBalkenUnten - balkenUnten.height()/2, balkenUnten);
 
     for(int i = 0; i < listChilds.size(); i++)
         listChilds.at(i)->draw(p);
@@ -86,6 +98,30 @@ GlButton* GlMainMenu::newButton(QString text, QRect rect)
     return button;
 }
 
+void GlMainMenu::rollIn(QPainter *p)
+{
+    int per = getPercent();
+    int angle = int((per/100.)* -90);
+
+    if(per < 0 || per > 100) return;
+
+    buttonPlayer->drawImageAt(p, angle, per);
+    buttonGenre->drawImageAt(p, angle, per);
+    buttonInterpret->drawImageAt(p, angle, per);
+    buttonPlaylist->drawImageAt(p, angle, per);
+    buttonSampler->drawImageAt(p, angle, per);
+    buttonRadio->drawImageAt(p, angle, per);
+    buttonQuick->drawImageAt(p, angle, per);
+    buttonSetting->drawImageAt(p, angle, per);
+
+    QPixmap pm;
+    pm = balkenOben.scaled(balkenOben.width(), balkenOben.height() - (per/100.)*balkenOben.height());
+    p->drawPixmap(0, yBalkenOben - pm.height()/2, pm);
+
+    pm = balkenUnten.scaled(balkenUnten.width(), balkenUnten.height() - (per/100.)*balkenUnten.height());
+    p->drawPixmap(0, yBalkenUnten - pm.height()/2, pm);
+}
+
 void GlMainMenu::rollOut(QPainter *p)
 {
     /*Ale Buttons werden weggerollt*/
@@ -104,6 +140,12 @@ void GlMainMenu::rollOut(QPainter *p)
     buttonQuick->drawImageAt(p, angle, per);
     buttonSetting->drawImageAt(p, angle, per);
 
+    QPixmap pm;
+    pm = balkenOben.scaled(balkenOben.width(), balkenOben.height() - (per/100.)*balkenOben.height());
+    p->drawPixmap(0, yBalkenOben - pm.height()/2, pm);
+
+    pm = balkenUnten.scaled(balkenUnten.width(), balkenUnten.height() - (per/100.)*balkenUnten.height());
+    p->drawPixmap(0, yBalkenUnten - pm.height()/2, pm);
 }
 
 void GlMainMenu::setLarge()
@@ -114,6 +156,12 @@ void GlMainMenu::setLarge()
 
     setGeometry(0,0,1024,768);
     backGroundPixmap = backGroundPixmap.scaled(1024,768);
+
+    yBalkenOben = yBalkenOben * 1.28;
+    yBalkenUnten = yBalkenUnten * 1.28;
+
+    balkenOben = balkenOben.scaled(1024, 63);
+    balkenUnten = balkenUnten.scaled(1024, 102);
 
     for(int i = 0; i < listChilds.size(); i++)
     {

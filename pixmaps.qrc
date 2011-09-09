@@ -17,5 +17,9 @@
         <file>images/pictureFlowRigthPressed.png</file>
         <file>images/button120.png</file>
         <file>images/button120Pressed.png</file>
+        <file>images/player.png</file>
+        <file>images/mainBalkenOben.png</file>
+        <file>images/mainBalkenUnten.png</file>
+        <file>images/home.png</file>
     </qresource>
 </RCC>

@@ -26,3 +26,12 @@ QStringList Database::getStringListFromQuery(QString queryString)
     QStringList tmp;
     return tmp;
 }
+
+QList<MetaPaket> Database::getTracksFromAlbum(QString interpret, QString album)
+{
+    Q_UNUSED (interpret);
+    Q_UNUSED (album);
+
+    QList<MetaPaket> dummy;
+    return dummy;
+}

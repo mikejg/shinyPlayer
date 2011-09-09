@@ -11,8 +11,10 @@ class GlMainMenu : public GlObject
 {
     Q_OBJECT
 private:
-    QImage img_btn_Player;
-    QImage img_btn_Genre;
+    QPixmap balkenOben;
+    QPixmap balkenUnten;
+    int yBalkenOben;
+    int yBalkenUnten;
 
 public:
     GlButton* buttonPlayer;
@@ -33,6 +35,7 @@ public:
 
     GlButton* newButton(QString text, QRect rect);
 
+    void rollIn(QPainter* p);
     void rollOut(QPainter *p);
 
     void setLarge();
@@ -40,6 +43,7 @@ public:
 signals:
     void buttonGenre_clicked();
     void buttonInterpret_clicked();
+    void buttonPlayer_clicked();
 };
 
 #endif // GLMAINMENU_H

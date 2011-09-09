@@ -68,7 +68,7 @@ QPixmap DB_Amarok_Embedded::getCover(QString i, QString a)
                           "AND "
                           "albums.name = '" + a + "' ";
     QString imagePath = getStringFromQuery(queryString);
-    qDebug() << imagePath;
+
     if(imagePath.isEmpty())
         pm.load(":/images/noCover.png");
     else
@@ -116,4 +116,52 @@ QStringList DB_Amarok_Embedded::getStringListFromQuery(QString queryString)
 
     mysql_free_result(results);
     return stringListResults;
+}
+
+QList<MetaPaket> DB_Amarok_Embedded::getTracksFromAlbum(QString interpret, QString album)
+{
+    interpret = interpret.replace("'", "''");
+    album = album.replace("'", "''");
+
+    QList<MetaPaket> list;
+    MetaPaket metaPaket;
+    QString coverUrl;
+
+    QString queryString = "SELECT images.path FROM albums "
+                          "INNER JOIN artists ON albums.artist = artists.id "
+                          "INNER JOIN images ON albums.image = images.id "
+                          "WHERE "
+                          "artists.name = '" + interpret + "' "
+                          "AND "
+                          "albums.name = '" + album + "' ";
+
+    coverUrl = getStringFromQuery(queryString);
+
+    if (coverUrl.isEmpty())
+        coverUrl = QString(":/images/noCover.png");
+
+    queryString = "SELECT urls.rpath, tracknumber, title, artists.name, albums.name, url From tracks "
+                              "INNER JOIN artists ON tracks.artist = artists.id "
+                              "INNER JOIN albums ON tracks.album = albums.id "
+                              "INNER JOIN urls ON tracks.url = urls.id "
+                              "WHERE "
+                              "artists.name = '" + interpret + "' "
+                              "AND albums.name = '" + album + "' "
+                              "ORDER BY tracknumber, title";
+
+        const char* query = qstrdup( QString( "%1" ).arg( queryString ).toAscii().data() );
+        mysql_query(mysql, query);
+        results = mysql_store_result(mysql);
+        while((record = mysql_fetch_row(results)))
+             {
+               metaPaket.url = QString("/") + record[0];
+               metaPaket.title = record[2];
+               metaPaket.interpret = interpret;
+               metaPaket.album = album;
+               metaPaket.coverUrl = coverUrl;
+               //qDebug() << metaPaket.url;
+               list.append(metaPaket);
+             }
+        mysql_free_result(results);
+        return list;
 }
