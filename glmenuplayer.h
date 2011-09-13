@@ -24,6 +24,7 @@ public:
     void draw(QPainter *p);
 
     void insertNewAlbum(QString interpret, QString album);
+    void insertNewTitle(MetaPaket mp);
 
     void mousePressEvent (QMouseEvent * event);
     void mouseReleaseEvent ( QMouseEvent * event );

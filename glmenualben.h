@@ -3,6 +3,7 @@
 
 #include "globject.h"
 #include "glpictureflow.h"
+#include "gltracklistwidget.h"
 #include "settings.h"
 
 class GlMenuAlben : public GlObject
@@ -10,12 +11,14 @@ class GlMenuAlben : public GlObject
     Q_OBJECT
 private:
     GlPictureFlow* pictureFlow;
+    GlTrackListWidget* trackList;
     GlButton* buttonMain;
     GlButton* buttonPlayer;
     GlButton* buttonInterpret;
     Database* db;
     QColor backGroundColor;
     QString stringInterpret;
+    bool tracks;
 
 public:
     GlMenuAlben(GlObject* parent = 0);
@@ -35,15 +38,19 @@ public:
 
 public slots:
     void albumSelected(QString);
+    void animationDone();
     void buttonInterpret_clicked();
     void buttonMain_clicked();
+    void buttonPictureFlow_Tracks_Clicked();
     void buttonPlayer_clicked();
+    void pictureFlow_animationDone();
 
 signals:
     void backToInterpret();
     void backToMain();
     void backToPlayer();
     void newAlbumSelected(QString, QString);
+    void newTitleSelected(MetaPaket);
 
 };
 

@@ -1,4 +1,5 @@
 #include "glpictureflow.h"
+#include <QTimer>
 
 GlPictureFlow::GlPictureFlow(GlObject* parent) : GlObject(parent)
 {
@@ -25,6 +26,7 @@ GlPictureFlow::GlPictureFlow(GlObject* parent) : GlObject(parent)
     buttonTracks->setBackGroundPixmap(QPixmap(":/images/button120.png"));
     buttonTracks->setBackGroundPixmapPressed(QPixmap(":/images/button120Pressed.png"));
     buttonTracks->setText("Tracks");
+    connect(buttonTracks, SIGNAL(clicked()), this, SIGNAL(buttonTracks_Clicked()));
 
     timeLine = new QTimeLine(350, this);
     timeLine->setLoopCount(1);
@@ -70,6 +72,7 @@ void GlPictureFlow::done()
     if(for_backward == &GlPictureFlow::draw_backward)
        centerImage--;
 
+    QTimer::singleShot(100, this, SIGNAL(animationDone()));
    // newAlbum(alben.at(centerImage));
 }
 
@@ -100,7 +103,7 @@ void GlPictureFlow::draw_backward(QPainter* p)
 
        p->setPen(QColor(255,255,255,125));
        p->drawText(QRect(0,0,getWidth(),30),Qt::AlignHCenter,alben.at(centerImage));
-
+    centerAlbum = alben.at(centerImage);
     i = centerImage - 5;
     if(i > -1 && i < images.size())
       {
@@ -215,6 +218,7 @@ void GlPictureFlow::draw_forward(QPainter *p)
 
        p->setPen(QColor(255,255,255,125));
        p->drawText(QRect(0,0,getWidth(),30),Qt::AlignHCenter,alben.at(centerImage));
+    centerAlbum = alben.at(centerImage);
 
     i = centerImage - 4;
     if(i > -1 && i < images.size())

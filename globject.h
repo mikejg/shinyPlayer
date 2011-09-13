@@ -42,6 +42,7 @@ public:
     QRect geometry(){return QRect(x,y,width,height);}
     QPoint getCenter();
     int getHeight() { return height; }
+    QImage getImage() { return img; }
     GlObject* getParent() { return glParent; }
     int getPercent() { return percent; }
     QPixmap getPixmap();

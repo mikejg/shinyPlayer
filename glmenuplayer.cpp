@@ -34,6 +34,13 @@ void GlMenuPlayer::insertNewAlbum(QString interpret, QString album)
     }
 }
 
+void GlMenuPlayer::insertNewTitle(MetaPaket mp)
+{
+    trackList->newTrack(mp);
+    trackList->setCurrentItem(trackList->indexOf(mp));
+    playEngine->play(mp.url);
+}
+
 void GlMenuPlayer::mousePressEvent(QMouseEvent *event)
 {
     /*Überprüft ob die Maus über einem Button gedrückt wurde und

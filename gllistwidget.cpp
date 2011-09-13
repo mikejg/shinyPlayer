@@ -19,12 +19,55 @@ GlListWidget::GlListWidget(GlObject* parent ) : GlObject(parent)
     buttonDown = new GlButton(this);
     buttonDown->setBackGroundPixmap(QPixmap(":/images/button400.png"));
     buttonDown->setBackGroundPixmapPressed(QPixmap(":/images/button400_pressed.png"));
+    connect(buttonDown, SIGNAL(clicked()), this, SLOT(buttonDown_clicked())),
 
     buttonUp = new GlButton(this);
     buttonUp->setBackGroundPixmap(QPixmap(":/images/button400.png"));
     buttonUp->setBackGroundPixmapPressed(QPixmap(":/images/button400_pressed.png"));
+    connect(buttonUp, SIGNAL(clicked()), this, SLOT(buttonUp_clicked()));
 
     animation = new GlAnimation(this);
+}
+
+void GlListWidget::buttonUp_clicked()
+{
+    if(startPos + 15 < listItem.size())
+    {
+        animation->setImage(getListImage(true));
+        startPos = startPos + 15;
+        animation->setImage2(getListImage(true));
+        animation->startScrollUp();
+    }
+    else
+    {
+        animation->setImage(getListImage(true));
+        animation->startJumpUp();
+    }
+}
+
+void GlListWidget::buttonDown_clicked()
+{
+    if(startPos == 0)
+    {
+        animation->setImage(getListImage(true));
+        animation->startJumpDown();
+        return;
+    }
+
+    if(startPos - 15 < 0)
+    {
+        animation->setImage(getListImage(true));
+        startPos = 0;
+        animation->setImage2(getListImage(true));
+        animation->startScrollDown();
+        return;
+    }
+
+    animation->setImage(getListImage(true));
+    startPos = startPos - 15;
+    animation->setImage2(getListImage(true));
+    animation->startScrollDown();
+    return;
 }
 
 void GlListWidget::draw(QPainter *p)
@@ -80,7 +123,7 @@ void GlListWidget::drawText(QPainter *p, QRect rect, QString text)
     p->drawText(rect,Qt::AlignLeft | Qt::AlignVCenter,text);
 }
 
-QImage GlListWidget::getListImage()
+QImage GlListWidget::getListImage(bool fullSize)
 {
     /*erstellt einen Screenshot Liste. Wird zum drehen der Liste
       benötigt. Siehe auch draw(QPainter* p)*/
@@ -112,7 +155,8 @@ QImage GlListWidget::getListImage()
     }
     p.end();
 
-    returnPixmap = returnPixmap.scaled(listWidth * 0.95, listHeight * 0.95);
+    if(!fullSize)
+        returnPixmap = returnPixmap.scaled(listWidth * 0.95, listHeight * 0.95);
 
     return returnPixmap.toImage();
 }

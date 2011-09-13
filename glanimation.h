@@ -24,21 +24,38 @@ public:
 
     void (GlAnimation::*doAnimation)(QPainter* p);
     void draw(QPainter *p);
-    void setImage2(QImage i) { image2 = i; }
 
-    void startRotation();
+    void jumpDown(QPainter* p);
+    void jumpUp(QPainter* p);
 
     void rotateIn(QPainter* p);
     void rotateOut(QPainter* p);
+
+    void scrollDown(QPainter* p);
+    void scrollUp(QPainter* p);
+    void setImage2(QImage i) { image2 = i; }
+
+    void startJumpDown();
+    void startJumpUp();
+    void startRotation();
+    void startScrollDown();
+    void startScrollUp();
+    void startZoomIn();
+    void startZoomOut();
+
+    void zoomIn(QPainter* p);
+    void zoomOut(QPainter* p);
 
 public slots:
     void done();
     void newPercent(int);
     void start();
+    void startJumpDown2();
+    void startJumpUp2();
     void startRotation2();
 
-/*signals:
-    void done();*/
+signals:
+    void animationDone();
 };
 
 #endif // GLANIMATION_H

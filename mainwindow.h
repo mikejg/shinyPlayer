@@ -80,6 +80,8 @@ public slots:
     void setMenuInterpret_RollIn();
     void setMenuPlayer_RollIn();
 
+    void titleSelected(MetaPaket);
+
 protected:
     void mousePressEvent ( QMouseEvent * event );
     void mouseReleaseEvent ( QMouseEvent * event );

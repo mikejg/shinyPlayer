@@ -57,7 +57,7 @@ public:
     void draw(QPainter *p);
     void drawText(QPainter *p, QRect rect, QString text);
 
-    QImage getListImage();
+    QImage getListImage(bool fullSize = false);
 
     void insertItem(QString text);
     void insertItem(QStringList l);
@@ -67,6 +67,10 @@ public:
 
     void setGeometry(int posX, int posY, int w, int h);
     void setLarge();
+
+public slots:
+    void buttonDown_clicked();
+    void buttonUp_clicked();
 
 signals:
     void itemClicked(QString);

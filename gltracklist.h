@@ -48,6 +48,7 @@ public:
     int indexOf(MetaPaket mp);
 
     void newTracks(QList<MetaPaket> list);
+    void newTrack(MetaPaket mp);
 
     void setCurrentItem(int ci) { currentItem = ci; }
 };

@@ -5,9 +5,17 @@ GlMenuAlben::GlMenuAlben(GlObject* parent) : GlObject(parent)
     backGroundColor = QColor(Qt::black);
     setGeometry(0,0,800,600);
     setVisible(false);
+    tracks = false;
 
     pictureFlow = new GlPictureFlow(this);
     connect(pictureFlow, SIGNAL(albumClicked(QString)), this, SLOT(albumSelected(QString)));
+    connect(pictureFlow, SIGNAL(buttonTracks_Clicked()), this, SLOT(buttonPictureFlow_Tracks_Clicked()));
+    connect(pictureFlow, SIGNAL(animationDone()), this, SLOT(pictureFlow_animationDone()));
+
+    trackList = new GlTrackListWidget(this);
+    trackList->setVisible(false);
+    connect(trackList, SIGNAL(newTitleSelected(MetaPaket)), this, SIGNAL(newTitleSelected(MetaPaket)));
+    connect(trackList, SIGNAL(animationDone()), this, SLOT(animationDone()));
 
     buttonInterpret = new GlButton(this);
     buttonInterpret->setGeometry(550,480,200,30);
@@ -39,6 +47,11 @@ void GlMenuAlben::albumSelected(QString album)
     newAlbumSelected(stringInterpret, album);
 }
 
+void GlMenuAlben::animationDone()
+{
+    this->newChildToDraw(this);
+}
+
 void GlMenuAlben::buttonInterpret_clicked()
 {
     pictureFlow->setImage();
@@ -49,6 +62,39 @@ void GlMenuAlben::buttonMain_clicked()
 {
     pictureFlow->setImage();
     backToMain();
+}
+
+void GlMenuAlben::buttonPictureFlow_Tracks_Clicked()
+{
+    if(!tracks)
+    {
+        trackList->setTracks(db->getTracksFromAlbum(stringInterpret, pictureFlow->getCenterAlbum()));
+        trackList->setVisible(true);
+
+        buttonPlayer->setVisible(false);
+        buttonMain->setVisible(false);
+        buttonInterpret->setVisible(false);
+
+        trackList->startZoomIn();
+
+        tracks = true;
+        return;
+    }
+
+    if(tracks)
+    {
+        trackList->setVisible(false);
+
+        buttonPlayer->setVisible(true);
+        buttonMain->setVisible(true);
+        buttonInterpret->setVisible(true);
+
+        trackList->startZoomOut();
+
+        tracks = false;
+        return;
+    }
+
 }
 
 void GlMenuAlben::buttonPlayer_clicked()
@@ -63,9 +109,14 @@ void GlMenuAlben::draw(QPainter *p)
     p->drawRect(geometry());
 
     pictureFlow->draw(p);
-    buttonPlayer->draw(p);
-    buttonMain->draw(p);
-    buttonInterpret->draw(p);
+    if(buttonPlayer->isVisible())
+        buttonPlayer->draw(p);
+    if(buttonMain->isVisible())
+        buttonMain->draw(p);
+    if(buttonInterpret->isVisible())
+        buttonInterpret->draw(p);
+    if(trackList->isVisible())
+        trackList->draw(p);
 }
 
 void GlMenuAlben::mousePressEvent(QMouseEvent *event)
@@ -118,6 +169,16 @@ void GlMenuAlben::newInterpret(QString interpret)
     //newChildToDraw(this);
 }
 
+void GlMenuAlben::pictureFlow_animationDone()
+{
+    if(tracks)
+    {
+
+        trackList->setTracks(db->getTracksFromAlbum(stringInterpret, pictureFlow->getCenterAlbum()));
+        this->newChildToDraw(trackList);
+    }
+}
+
 void GlMenuAlben::rollOut(QPainter *p)
 {
     int per = getPercent();
@@ -148,6 +209,7 @@ void GlMenuAlben::setLarge()
 {
     setGeometry(0,0,1024, 768);
     pictureFlow->setLarge();
+    trackList->setLarge();
 
     buttonMain->setLarge();
     buttonInterpret->setLarge();

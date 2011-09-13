@@ -30,6 +30,7 @@ private:
     QPoint pt0, pt1, pt2, pt3, pt4, pt5,
            pt6, pt7, pt8, pt9, pt10, pt11;
 
+    QString centerAlbum;
     int distShort;
     int distLong;
     int centerImage;
@@ -54,13 +55,15 @@ public:
 
     void (GlPictureFlow::*for_backward)(QPainter* p);
 
+    QString getCenterAlbum() { return centerAlbum; }
+
     QImage mirrorImage(const QImage &i, MirrorStyle mirrorStyle=MirrorOverX,
                                      FadeStyle fadeStyle=FadeDown);
 
     void mousePressEvent (QMouseEvent * event);
     void mouseReleaseEvent ( QMouseEvent * event );
 
-    void setAlben(QStringList sl) {alben = sl;}
+    void setAlben(QStringList sl) {alben = sl; if(!alben.isEmpty()) centerAlbum = alben.at(0);}
     void setLarge();
 
 public slots:
@@ -71,6 +74,8 @@ public slots:
 
 signals:
     void albumClicked(QString);
+    void buttonTracks_Clicked();
+    void animationDone();
 };
 
 #endif // GLPICTUREFLOW_H

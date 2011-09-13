@@ -95,6 +95,13 @@ void GlTrackList::newTracks(QList<MetaPaket>list)
     }
 }
 
+void GlTrackList::newTrack(MetaPaket mp)
+{
+    GlTrackListItem* item = new GlTrackListItem(this);
+    item->setMetaPaket(mp);
+    listItem.append(item);
+}
+
 int GlTrackList::indexOf(MetaPaket mp)
 {
     MetaPaket tmp;

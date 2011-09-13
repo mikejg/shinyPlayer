@@ -106,6 +106,7 @@ MainWindow::MainWindow(QWidget * parent, const QGLWidget * shareWidget, Qt::Wind
     connect(menuAlben, SIGNAL(backToInterpret()), this, SLOT(menuAlben_ButtonInterpret_clicked()));
     connect(menuAlben, SIGNAL(backToMain()), this, SLOT(menuAlben_ButtonMain_clicked()));
     connect(menuAlben, SIGNAL(backToPlayer()), this, SLOT(menuAlben_ButtonPlayer_clicked()));
+    connect(menuAlben, SIGNAL(newTitleSelected(MetaPaket)), this, SLOT(titleSelected(MetaPaket)));
 
     menuPlayer = new GlMenuPlayer();
     menuPlayer->setVisible(false);
@@ -126,11 +127,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::albumSelected(QString interpret, QString album)
 {
-    //menuAlben->setVisible(false);
-    //menuPlayer->setVisible(true);
     menuPlayer->insertNewAlbum(interpret, album);
-    //drawPuffer.append(menuPlayer);
-    //update();
 }
 
 void MainWindow::animationDone()
@@ -483,4 +480,9 @@ void MainWindow::setMenuPlayer_RollIn()
     doAnimation = &MainWindow::menuPlayer_RollIn;
 
     timeLine->start();
+}
+
+void MainWindow::titleSelected(MetaPaket mp)
+{
+    menuPlayer->insertNewTitle(mp);
 }

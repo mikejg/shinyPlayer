@@ -23,7 +23,8 @@ SOURCES += main.cpp \
     glpictureflow.cpp \
     glmenuplayer.cpp \
     gltracklist.cpp \
-    play_engine.cpp
+    play_engine.cpp \
+    gltracklistwidget.cpp
 HEADERS += mainwindow.h \
     dialogsetting.h \
     settings.h \
@@ -42,7 +43,8 @@ HEADERS += mainwindow.h \
     glmenuplayer.h \
     gltracklist.h \
     metapaket.h \
-    play_engine.h
+    play_engine.h \
+    gltracklistwidget.h
 FORMS += mainwindow.ui
 RESOURCES += pixmaps.qrc
 INCLUDEPATH += /usr/include/mysql
