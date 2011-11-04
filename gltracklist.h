@@ -45,12 +45,26 @@ public:
     void drawTextLeft(QPainter *p, QRect rect, QString text);
     void drawTextRight(QPainter *p, QRect rect, QString text);
 
-    int indexOf(MetaPaket mp);
+    int getListSize() { return listItem.size(); }
+    int getStartPos() { return startPos; }
 
+    int indexOf(MetaPaket mp);
+    void mouseReleaseEvent(QMouseEvent *event);
+
+    MetaPaket nextItem();
     void newTracks(QList<MetaPaket> list);
     void newTrack(MetaPaket mp);
 
+    MetaPaket prevItem();
+
     void setCurrentItem(int ci) { currentItem = ci; }
+    void setStartPos(int p) { startPos = p; }
+
+public slots:
+    void clear();
+
+signals:
+    void itemClicked(MetaPaket);
 };
 
 #endif // GLTRACKLIST_H

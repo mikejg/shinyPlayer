@@ -24,7 +24,15 @@ SOURCES += main.cpp \
     glmenuplayer.cpp \
     gltracklist.cpp \
     play_engine.cpp \
-    gltracklistwidget.cpp
+    gltracklistwidget.cpp \
+    glmenuplaylist.cpp \
+    glmenusampler.cpp \
+    glmenuradio.cpp \
+    glradiolist.cpp \
+    glcombobox.cpp \
+    glmenuquick.cpp \
+    glrulewidget.cpp \
+    gltextlabel.cpp
 HEADERS += mainwindow.h \
     dialogsetting.h \
     settings.h \
@@ -44,7 +52,15 @@ HEADERS += mainwindow.h \
     gltracklist.h \
     metapaket.h \
     play_engine.h \
-    gltracklistwidget.h
+    gltracklistwidget.h \
+    glmenuplaylist.h \
+    glmenusampler.h \
+    glmenuradio.h \
+    glradiolist.h \
+    glcombobox.h \
+    glmenuquick.h \
+    glrulewidget.h \
+    gltextlabel.h
 FORMS += mainwindow.ui
 RESOURCES += pixmaps.qrc
 INCLUDEPATH += /usr/include/mysql

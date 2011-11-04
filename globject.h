@@ -57,12 +57,13 @@ public:
 
     void setBackGroundPixmap(QPixmap pix) { backGroundPixmap = pix; }
     virtual void setGeometry(int posX, int posY, int w, int h);
+    void setHeight(int h) { height = h; }
     void setImage();
     void setImage(QImage i) { img = i; }
     virtual void setLarge() {}
     void setPercent(int p) { percent = p; }
     void setVisible(bool b) { visible = b; }
-
+    void setY(int posY) { y = posY; }
 public slots:
     void newFrame(int f) { percent = f; update(); }
 

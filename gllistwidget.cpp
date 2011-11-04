@@ -27,6 +27,7 @@ GlListWidget::GlListWidget(GlObject* parent ) : GlObject(parent)
     connect(buttonUp, SIGNAL(clicked()), this, SLOT(buttonUp_clicked()));
 
     animation = new GlAnimation(this);
+    animation->setXoffset(5);
 }
 
 void GlListWidget::buttonUp_clicked()
@@ -170,7 +171,7 @@ void GlListWidget::insertItem(QString text)
     setImage();
 }
 
-void GlListWidget::insertItem(QStringList l)
+void GlListWidget::insertItem(QStringList l, bool a)
 {
     /*Einfügen einer neuen QStringList. Die alte Liste dreht sich weg und die
       neue Liste dreht sich ein
@@ -191,8 +192,11 @@ void GlListWidget::insertItem(QStringList l)
         listItem.append(item);
     }
     setImage();
-    animation->setImage2(getListImage());
-    animation->startRotation();
+    if(a)
+    {
+        animation->setImage2(getListImage());
+        animation->startRotation();
+    }
 }
 
 void GlListWidget::mousePressEvent(QMouseEvent *event)

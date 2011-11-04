@@ -1,5 +1,5 @@
 #include "db_amarok_embedded.h"
-
+#include "QDateTime"
 
 DB_Amarok_Embedded::DB_Amarok_Embedded(QObject* parent) : Database(parent)
 {
@@ -75,6 +75,18 @@ QPixmap DB_Amarok_Embedded::getCover(QString i, QString a)
         pm.load(imagePath);
 
     return pm;
+}
+
+QStringList DB_Amarok_Embedded::getPlaylist()
+{
+    QString queryString = "SELECT name FROM playlists";
+    return getStringListFromQuery(queryString);
+}
+
+QStringList DB_Amarok_Embedded::getSampler()
+{
+    QString queryString = "SELECT name from albums where albums.artist is NULL ";
+    return getStringListFromQuery(queryString);
 }
 
 QStringList DB_Amarok_Embedded::getInterpreten(QString s)
@@ -154,6 +166,7 @@ QList<MetaPaket> DB_Amarok_Embedded::getTracksFromAlbum(QString interpret, QStri
         results = mysql_store_result(mysql);
         while((record = mysql_fetch_row(results)))
              {
+               metaPaket.isEmpty = false;
                metaPaket.url = QString("/") + record[0];
                metaPaket.title = record[2];
                metaPaket.interpret = interpret;
@@ -164,4 +177,148 @@ QList<MetaPaket> DB_Amarok_Embedded::getTracksFromAlbum(QString interpret, QStri
              }
         mysql_free_result(results);
         return list;
+}
+
+QList<MetaPaket> DB_Amarok_Embedded::getTracksFromPlaylist(QString playlist)
+{
+    QList<MetaPaket> list;
+    MetaPaket metaPaket;
+    QString coverUrl;
+
+    QString queryString = "SELECT urls.rpath, title, artist, album, playlists.name, url FROM playlist_tracks "
+                          "INNER JOIN playlists ON playlist_tracks.playlist_id = playlists.id "
+                          "INNER JOIN urls ON playlist_tracks.url = urls.uniqueid "
+                          "WHERE playlists.name = '" + playlist + "' "
+                          "ORDER BY artist, album;";
+
+    const char* query = qstrdup( QString( "%1" ).arg( queryString ).toAscii().data() );
+    mysql_query(mysql, query);
+    results = mysql_store_result(mysql);
+    while((record = mysql_fetch_row(results)))
+    {
+        metaPaket.isEmpty = false;
+        metaPaket.url = QString("/") + record[0];
+        metaPaket.title = record[1];
+        metaPaket.interpret = record[2];
+        metaPaket.album = record[3];
+        metaPaket.coverUrl = coverUrl;
+        list.append(metaPaket);
+    }
+    mysql_free_result(results);
+
+    QString interpret;
+    QString album;
+
+    foreach (MetaPaket metaPaket, list)
+    {
+        interpret = metaPaket.interpret.replace("'", "''");
+        album = metaPaket.album.replace("'", "''");
+
+        queryString = "SELECT images.path FROM albums "
+                      "INNER JOIN artists ON albums.artist = artists.id "
+                      "INNER JOIN images ON albums.image = images.id "
+                      "WHERE "
+                      "artists.name = '" + interpret + "' "
+                      "AND "
+                      "albums.name = '" + album + "' ";
+
+        metaPaket.coverUrl = getStringFromQuery(queryString);
+    }
+
+    return list;
+
+}
+
+QList<MetaPaket> DB_Amarok_Embedded::getTracksFromQuick(QString year)
+{
+    QList<MetaPaket> list;
+    QDateTime time = QDateTime::currentDateTime();
+    qDebug() << time.toTime_t();
+    time = time.addDays(-7);
+    uint pastTime = time.toTime_t();
+    qDebug() << pastTime;
+
+    /*QString queryString = "SELECT title, artists.name, years.name From tracks "
+                          "INNER JOIN artists ON tracks.artist = artists.id "
+                          "INNER JOIN years ON tracks.album = years.id "
+                          "WHERE "
+                          "years.name > '" + year + "' "
+                          "ORDER BY title";*/
+
+    /*QString queryString = "SELECT statistics.rating, title, artists.name, statistics.url From tracks "
+                          "INNER JOIN artists ON tracks.artist = artists.id "
+                          "INNER JOIN statistics ON tracks.url = statistics.url "
+                          "WHERE "
+                          "statistics.rating > 3 "
+                          "ORDER BY tracknumber, title";*/
+
+    QString queryString = "SELECT title, artists.name, createdate From tracks "
+                              "INNER JOIN artists ON tracks.artist = artists.id "
+                              "WHERE "
+                              "createdate > " + QString("%1").arg(pastTime) + " "
+                              "ORDER BY createdate";
+    const char* query = qstrdup( QString( "%1" ).arg( queryString ).toAscii().data() );
+    mysql_query(mysql, query);
+    results = mysql_store_result(mysql);
+
+    while((record = mysql_fetch_row(results)))
+    {
+        qDebug() << record[2];
+        qDebug() << record[1];
+    }
+
+    mysql_free_result(results);
+    return list;
+}
+
+QList<MetaPaket> DB_Amarok_Embedded::getTracksFromSampler(QString sampler)
+{
+    QList<MetaPaket> list;
+    MetaPaket metaPaket;
+    QString coverUrl;
+
+    QString queryString = "SELECT urls.rpath, title, artists.name, albums.name, url From tracks "
+                          "INNER JOIN artists ON tracks.artist = artists.id "
+                          "INNER JOIN albums ON tracks.album = albums.id "
+                          "INNER JOIN urls ON tracks.url = urls.id "
+                          "WHERE "
+                          "albums.name = '" + sampler + "' "
+                          "ORDER BY tracknumber, title";
+
+    const char* query = qstrdup( QString( "%1" ).arg( queryString ).toAscii().data() );
+    mysql_query(mysql, query);
+    results = mysql_store_result(mysql);
+    while((record = mysql_fetch_row(results)))
+    {
+        metaPaket.isEmpty = false;
+        metaPaket.url = QString("/") + record[0];
+        metaPaket.title = record[1];
+        metaPaket.interpret = record[2];
+        metaPaket.album = record[3];
+        metaPaket.coverUrl = coverUrl;
+        list.append(metaPaket);
+    }
+    mysql_free_result(results);
+
+    QString interpret;
+    QString album;
+
+    foreach (MetaPaket metaPaket, list)
+    {
+        interpret = metaPaket.interpret.replace("'", "''");
+        album = metaPaket.album.replace("'", "''");
+
+        queryString = "SELECT images.path FROM albums "
+                      "INNER JOIN artists ON albums.artist = artists.id "
+                      "INNER JOIN images ON albums.image = images.id "
+                      "WHERE "
+                      "artists.name = '" + interpret + "' "
+                      "AND "
+                      "albums.name = '" + album + "' ";
+
+        metaPaket.coverUrl = getStringFromQuery(queryString);
+    }
+
+    return list;
+
 }

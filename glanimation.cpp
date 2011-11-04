@@ -3,6 +3,8 @@
 
 GlAnimation::GlAnimation(GlObject* parent) : GlObject(parent)
 {
+    xOffset = 0;
+
     timeLine = new QTimeLine(500, this);
     timeLine->setLoopCount(1);
     timeLine->setFrameRange(0, 100);
@@ -38,7 +40,7 @@ void GlAnimation::jumpDown(QPainter *p)
     int t_y = tmpImg.height() - t_height;
     tmpImg = tmpImg.copy(0, 0, tmpImg.width(), t_height);
 
-    p->drawImage(geometry().x() + 5, geometry().y() + t_y, tmpImg);
+    p->drawImage(geometry().x() + xOffset, geometry().y() + t_y, tmpImg);
 }
 
 void GlAnimation::jumpUp(QPainter *p)
@@ -54,7 +56,7 @@ void GlAnimation::jumpUp(QPainter *p)
     int t_height = tmpImg.height() -t_y;
     tmpImg = tmpImg.copy(0, t_y, tmpImg.width(), t_height);
 
-    p->drawImage(geometry().x() + 5, geometry().y(), tmpImg);
+    p->drawImage(geometry().x() + xOffset, geometry().y(), tmpImg);
 }
 
 void GlAnimation::newPercent(int per)
@@ -107,13 +109,13 @@ void GlAnimation::scrollDown(QPainter *p)
     int t_y = tmpImg.height() - t_height;
     tmpImg = tmpImg.copy(0, 0, tmpImg.width(), t_height);
 
-    p->drawImage(geometry().x() + 5, geometry().y() + t_y, tmpImg);
+    p->drawImage(geometry().x() + xOffset, geometry().y() + t_y, tmpImg);
 
     t_height = (int)((per/100.) * image2.height());
     t_y = image2.height() - t_height;
     tmpImg = image2.copy(0,t_y,image2.width(), t_height);
 
-    p->drawImage(geometry().x() + 5, geometry().y(), tmpImg);
+    p->drawImage(geometry().x() + xOffset, geometry().y(), tmpImg);
 }
 
 void GlAnimation::scrollUp(QPainter *p)
@@ -129,13 +131,13 @@ void GlAnimation::scrollUp(QPainter *p)
     int t_height = tmpImg.height() -t_y;
     tmpImg = tmpImg.copy(0, t_y, tmpImg.width(), t_height);
 
-    p->drawImage(geometry().x() + 5, geometry().y(), tmpImg);
+    p->drawImage(geometry().x() + xOffset, geometry().y(), tmpImg);
 
     t_y = geometry().y() + tmpImg.height();
     t_height = (int)((per/100.) * image2.height());
     tmpImg = image2.copy(0,0,image2.width(), t_height);
 
-    p->drawImage(geometry().x() + 5, t_y, tmpImg);
+    p->drawImage(geometry().x() + xOffset, t_y, tmpImg);
 }
 
 void GlAnimation::startRotation()

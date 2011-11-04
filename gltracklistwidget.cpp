@@ -105,6 +105,7 @@ void GlTrackListWidget::setLarge()
 void GlTrackListWidget::setTracks(QList<MetaPaket> mplist)
 {
     itemList.clear();
+    //qDebug() << mplist.size();
 
     GlTrackListWidgetItem* item;
     for( int i = 0; i < mplist.size(); i++)

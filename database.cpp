@@ -11,6 +11,18 @@ QPixmap Database::getCover(QString i, QString a)
     return QPixmap();
 }
 
+QStringList Database::getPlaylist()
+{
+    QStringList tmp;
+    return tmp;
+}
+
+QStringList Database::getSampler()
+{
+    QStringList tmp;
+    return tmp;
+}
+
 QString Database::getStringFromQuery(QString queryString)
 {
     Q_UNUSED (queryString);
@@ -31,6 +43,30 @@ QList<MetaPaket> Database::getTracksFromAlbum(QString interpret, QString album)
 {
     Q_UNUSED (interpret);
     Q_UNUSED (album);
+
+    QList<MetaPaket> dummy;
+    return dummy;
+}
+
+QList<MetaPaket> Database::getTracksFromPlaylist(QString playlist)
+{
+    Q_UNUSED (playlist);
+
+    QList<MetaPaket> dummy;
+    return dummy;
+}
+
+QList<MetaPaket> Database::getTracksFromQuick(QString year)
+{
+    Q_UNUSED (year);
+
+    QList<MetaPaket> dummy;
+    return dummy;
+}
+
+QList<MetaPaket> Database::getTracksFromSampler(QString sampler)
+{
+    Q_UNUSED (sampler);
 
     QList<MetaPaket> dummy;
     return dummy;

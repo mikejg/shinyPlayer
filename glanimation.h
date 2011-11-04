@@ -18,6 +18,7 @@ class GlAnimation : public GlObject
 private:
     QTimeLine* timeLine;
     QImage image2;
+    int xOffset;
 
 public:
     GlAnimation(GlObject* parent = 0);
@@ -33,7 +34,9 @@ public:
 
     void scrollDown(QPainter* p);
     void scrollUp(QPainter* p);
+
     void setImage2(QImage i) { image2 = i; }
+    void setXoffset(int xo) { xOffset = xo; }
 
     void startJumpDown();
     void startJumpUp();

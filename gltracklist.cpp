@@ -14,6 +14,13 @@ GlTrackList::GlTrackList(GlObject* parent) : GlObject(parent)
     itemHeight = fontSize + 10;
 }
 
+void GlTrackList::clear()
+{
+    listItem.clear();
+    currentItem = 0;
+    newChildToDraw(this);
+}
+
 void GlTrackList::draw(QPainter* p)
 {
     p->fillRect(geometry(), Qt::black);
@@ -44,7 +51,6 @@ void GlTrackList::draw(QPainter* p)
             drawTextRight(p, re, listItem.at(i+startPos)->interpret());
             if( (i + startPos)  == currentItem)
               {
-                qDebug("rect");
                 p->fillRect(QRect(10, getY() + 2 + itemHeight * i, getWidth() - 20 , itemHeight - 4), QColor(0,0,0,125));
               }
         }
@@ -83,6 +89,42 @@ void GlTrackList::drawTextRight(QPainter *p, QRect rect, QString text)
     p->drawText(rect,Qt::AlignRight | Qt::AlignVCenter,text);
 }
 
+
+MetaPaket GlTrackList::nextItem()
+{
+    MetaPaket mp;
+    mp.isEmpty = true;
+
+    if(currentItem + 1 < listItem.size())
+    {
+        currentItem++;
+        mp = listItem.at(currentItem)->getMetaPaket();
+    }
+
+    return mp;
+}
+
+void GlTrackList::mouseReleaseEvent(QMouseEvent *event)
+{
+    /*Wurde die Maus innerhalb des eigenen Rechtecks gedrückt wird in
+      der Liste nach einem Button oder Listeneintrag gesucht und seine
+      Funktion mouseReleaseEvent aufgerufen*/
+
+    QRect rect = geometry();
+
+    if(rect.contains(event->pos()))
+    {
+        //qDebug() << QString("%1").arg((event->pos().y() - listY) / itemHeight);
+        int i = ((event->pos().y() - getY()) / itemHeight) + startPos;
+        if(i < listItem.size())
+        {
+            itemClicked(listItem.at(i)->getMetaPaket());
+            currentItem = i;
+            newChildToDraw(this);
+        }
+    }
+}
+
 void GlTrackList::newTracks(QList<MetaPaket>list)
 {
     MetaPaket mp;
@@ -102,6 +144,19 @@ void GlTrackList::newTrack(MetaPaket mp)
     listItem.append(item);
 }
 
+MetaPaket GlTrackList::prevItem()
+{
+    MetaPaket mp;
+    mp.isEmpty = true;
+
+    if(currentItem - 1 < listItem.size() && currentItem > 0)
+    {
+        currentItem--;
+        mp = listItem.at(currentItem)->getMetaPaket();
+    }
+
+    return mp;
+}
 int GlTrackList::indexOf(MetaPaket mp)
 {
     MetaPaket tmp;

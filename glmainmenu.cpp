@@ -2,7 +2,7 @@
 
 GlMainMenu::GlMainMenu(GlObject* parent) : GlObject(parent)
 {
-    setBackGroundPixmap(QPixmap(":/images/main.png"));
+    //setBackGroundPixmap(QPixmap(":/images/main.png"));
     setGeometry(0,0,800,600);
 
     balkenOben = QPixmap(":/images/mainBalkenOben.png");
@@ -21,12 +21,16 @@ GlMainMenu::GlMainMenu(GlObject* parent) : GlObject(parent)
     connect(buttonInterpret, SIGNAL(clicked()), this, SIGNAL(buttonInterpret_clicked()));
 
     buttonPlaylist = newButton(QString("Playlist"), QRect(180,360,200,30));
+    connect(buttonPlaylist, SIGNAL(clicked()), this, SIGNAL(buttonPlaylist_clicked()));
 
     buttonSampler = newButton(QString("Sampler"), QRect(420,210,200,30));
+    connect(buttonSampler, SIGNAL(clicked()), this, SIGNAL(buttonSampler_clicked()));
 
     buttonRadio = newButton(QString("Radio"), QRect(420, 260, 200, 30));
+    connect(buttonRadio, SIGNAL(clicked()), this, SIGNAL(buttonRadio_clicked()));
 
     buttonQuick = newButton(QString("Quick & Dirty"), QRect(420, 310,200,30));
+    connect(buttonQuick, SIGNAL(clicked()), this, SIGNAL(buttonQuick_clicked()));
 
     buttonSetting = newButton(QString("Setting"), QRect(420,360,200,30));
 }
@@ -155,7 +159,7 @@ void GlMainMenu::setLarge()
       - Alle Buttons vergrössern*/
 
     setGeometry(0,0,1024,768);
-    backGroundPixmap = backGroundPixmap.scaled(1024,768);
+    //backGroundPixmap = backGroundPixmap.scaled(1024,768);
 
     yBalkenOben = yBalkenOben * 1.28;
     yBalkenUnten = yBalkenUnten * 1.28;

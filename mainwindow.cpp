@@ -6,6 +6,7 @@
 #include <QDebug>
 
 #include "db_amarok_embedded.h"
+#include <QTimer>
 
 MainWindow::MainWindow(QWidget * parent, const QGLWidget * shareWidget, Qt::WindowFlags f) :
         QGLWidget(parent, shareWidget, f)
@@ -18,7 +19,7 @@ MainWindow::MainWindow(QWidget * parent, const QGLWidget * shareWidget, Qt::Wind
     timeLine->setCurveShape(QTimeLine::EaseInCurve);
 
     set = new Settings;
-    setGeometry(0,0,800,600);
+    setGeometry(0,0,800, 600);
 
     setting = new DialogSetting(this,0,set);
     QStringList* errorList = new QStringList();
@@ -66,7 +67,6 @@ MainWindow::MainWindow(QWidget * parent, const QGLWidget * shareWidget, Qt::Wind
     playEngine = new Play_Engine(this);
 
     mainMenu = new GlMainMenu();
-
     listChilds.append(mainMenu);
     drawPuffer.append(mainMenu);
 
@@ -76,6 +76,10 @@ MainWindow::MainWindow(QWidget * parent, const QGLWidget * shareWidget, Qt::Wind
     connect(mainMenu, SIGNAL(buttonGenre_clicked()), this, SLOT(mainMenu_ButtonGenre_clicked()));
     connect(mainMenu, SIGNAL(buttonInterpret_clicked()), this, SLOT(mainMenu_ButtonInterpret_clicked()));
     connect(mainMenu, SIGNAL(buttonPlayer_clicked()), this, SLOT(mainMenu_ButtonPlayer_clicked()));
+    connect(mainMenu, SIGNAL(buttonPlaylist_clicked()), this, SLOT(mainMenu_ButtonPlaylist_clicked()));
+    connect(mainMenu, SIGNAL(buttonQuick_clicked()), this, SLOT(mainMenu_ButtonQuick_clicked()));
+    connect(mainMenu, SIGNAL(buttonSampler_clicked()), this, SLOT(mainMenu_ButtonSampler_clicked()));
+    connect(mainMenu, SIGNAL(buttonRadio_clicked()), this, SLOT(mainMenu_ButtonRadio_clicked()));
 
     menuInterpret = new GlMenuInterpret();
     menuInterpret->setVisible(false);
@@ -117,7 +121,48 @@ MainWindow::MainWindow(QWidget * parent, const QGLWidget * shareWidget, Qt::Wind
     connect(menuPlayer, SIGNAL(newChildToDraw(GlObject*)), this, SLOT(newChildToDraw(GlObject*)));
     connect(menuPlayer, SIGNAL(update()), this, SLOT(update()));
     connect(menuPlayer, SIGNAL(buttonMain_clicked()), this, SLOT(menuPlayer_ButtonMain_clicked()));
-    //setLarge();
+
+    menuPlaylist = new GlMenuPlaylist();
+    menuPlaylist->setVisible(false);
+    listChilds.append(menuPlaylist);
+    menuPlaylist->setDatabase(set->db);
+
+    connect(menuPlaylist, SIGNAL(newChildToDraw(GlObject*)), this, SLOT(newChildToDraw(GlObject*)));
+    connect(menuPlaylist, SIGNAL(update()), this, SLOT(update()));
+    connect(menuPlaylist, SIGNAL(playlistSelected(QString)), this, SLOT(playlistSelected(QString)));
+    connect(menuPlaylist, SIGNAL(buttonMainClicked()), this, SLOT(menuPlaylist_ButtonMain_clicked()));
+    connect(menuPlaylist, SIGNAL(buttonPlayerClicked()), this, SLOT(menuPlaylist_ButtonPlayer_clicked()));
+
+    menuQuick = new GlMenuQuick();
+    menuQuick->setVisible(false);
+    listChilds.append(menuQuick);
+    menuQuick->setDatabase(set->db);
+
+    connect(menuQuick, SIGNAL(newChildToDraw(GlObject*)), this, SLOT(newChildToDraw(GlObject*)));
+    connect(menuQuick, SIGNAL(update()), this, SLOT(update()));
+    connect(menuQuick, SIGNAL(buttonMain_clicked()), this, SLOT(menuQuick_ButtonMain_clicked()));
+
+    menuRadio = new GlMenuRadio();
+    menuRadio->setVisible(false);
+    listChilds.append(menuRadio);
+
+    connect(menuRadio, SIGNAL(newChildToDraw(GlObject*)), this, SLOT(newChildToDraw(GlObject*)));
+    connect(menuRadio, SIGNAL(update()), this, SLOT(update()));
+    connect(menuRadio, SIGNAL(radioItemClicked(QString)), this, SLOT(radioSelected(QString)));
+    connect(menuRadio, SIGNAL(buttonMain_clicked()), this, SLOT(menuRadio_ButtonMain_clicked()));
+
+    menuSampler = new GlMenuSampler();
+    menuSampler->setVisible(false);
+    listChilds.append(menuSampler);
+    menuSampler->setDatabase(set->db);
+
+    connect(menuSampler, SIGNAL(newChildToDraw(GlObject*)), this, SLOT(newChildToDraw(GlObject*)));
+    connect(menuSampler, SIGNAL(update()), this, SLOT(update()));
+    connect(menuSampler, SIGNAL(samplerSelected(QString)), this, SLOT(samplerSelected(QString)));
+    connect(menuSampler, SIGNAL(buttonMainClicked()), this, SLOT(menuSampler_ButtonMain_clicked()));
+    connect(menuSampler, SIGNAL(buttonPlayerClicked()), this, SLOT(menuSampler_ButtonPlayer_clicked()));
+
+    //QTimer::singleShot(100, this, SLOT(setLarge()));
 }
 
 MainWindow::~MainWindow()
@@ -173,6 +218,34 @@ void MainWindow::animationDone()
         drawPuffer.append(menuPlayer);
         update();
         menuPlayer->setVisible(true);
+    }
+
+    if(doAnimation == &MainWindow::menuPlaylist_RollIn)
+    {
+        drawPuffer.append(menuPlaylist);
+        update();
+        menuPlaylist->setVisible(true);
+    }
+
+    if(doAnimation == &MainWindow::menuSampler_RollIn)
+    {
+        drawPuffer.append(menuSampler);
+        update();
+        menuSampler->setVisible(true);
+    }
+
+    if(doAnimation == &MainWindow::menuRadio_RollIn)
+    {
+        drawPuffer.append(menuRadio);
+        update();
+        menuRadio->setVisible(true);
+    }
+
+    if(doAnimation == &MainWindow::menuQuick_RollIn)
+    {
+        drawPuffer.append(menuQuick);
+        update();
+        menuQuick->setVisible(true);
     }
 }
 
@@ -241,6 +314,63 @@ void MainWindow::mainMenu_ButtonPlayer_clicked()
     animation = true;
     connect(timeLine, SIGNAL(frameChanged(int)), mainMenu, SLOT(newFrame(int)));
     connect(timeLine, SIGNAL(finished()), this, SLOT(setMenuPlayer_RollIn()));
+
+    timeLine->start();
+}
+
+void MainWindow::mainMenu_ButtonPlaylist_clicked()
+{
+    mainMenu->setVisible(false);
+
+    timeLine->disconnect();
+    doAnimation = &MainWindow::mainMenu_RollOut;
+
+    animation = true;
+    connect(timeLine, SIGNAL(frameChanged(int)), mainMenu, SLOT(newFrame(int)));
+    connect(timeLine, SIGNAL(finished()), this, SLOT(setMenuPlaylist_RollIn()));
+
+    timeLine->start();
+}
+
+void MainWindow::mainMenu_ButtonQuick_clicked()
+{
+    mainMenu->setVisible(false);
+
+    timeLine->disconnect();
+    doAnimation = &MainWindow::mainMenu_RollOut;
+
+    animation = true;
+    connect(timeLine, SIGNAL(frameChanged(int)), mainMenu, SLOT(newFrame(int)));
+    connect(timeLine, SIGNAL(finished()), this, SLOT(setMenuQuick_RollIn()));
+
+    timeLine->start();
+}
+
+void MainWindow::mainMenu_ButtonSampler_clicked()
+{
+    mainMenu->setVisible(false);
+
+    timeLine->disconnect();
+    doAnimation = &MainWindow::mainMenu_RollOut;
+
+    animation = true;
+    connect(timeLine, SIGNAL(frameChanged(int)), mainMenu, SLOT(newFrame(int)));
+    connect(timeLine, SIGNAL(finished()), this, SLOT(setMenuSampler_RollIn()));
+
+    timeLine->start();
+}
+
+void MainWindow::mainMenu_ButtonRadio_clicked()
+{
+    mainMenu->setVisible(false);
+    menuRadio->setImage();
+
+    timeLine->disconnect();
+    doAnimation = &MainWindow::mainMenu_RollOut;
+
+    animation = true;
+    connect(timeLine, SIGNAL(frameChanged(int)), mainMenu, SLOT(newFrame(int)));
+    connect(timeLine, SIGNAL(finished()), this, SLOT(setMenuRadio_RollIn()));
 
     timeLine->start();
 }
@@ -334,6 +464,97 @@ void MainWindow::menuPlayer_ButtonMain_clicked()
     timeLine->start();
 }
 
+void MainWindow::menuPlaylist_ButtonMain_clicked()
+{
+    menuPlaylist->setVisible(false);
+
+    timeLine->disconnect();
+    doAnimation = &MainWindow::menuPlaylist_RollOut;
+
+    animation = true;
+    connect(timeLine, SIGNAL(frameChanged(int)), menuPlaylist, SLOT(newFrame(int)));
+    connect(timeLine, SIGNAL(finished()), this, SLOT(setMainMenu_RollIn()));
+
+    timeLine->start();
+}
+
+void MainWindow::menuPlaylist_ButtonPlayer_clicked()
+{
+    menuPlayer->setImage();
+
+    menuPlaylist->setVisible(false);
+
+    timeLine->disconnect();
+    doAnimation = &MainWindow::menuPlaylist_RollOut;
+
+    animation = true;
+    connect(timeLine, SIGNAL(frameChanged(int)), menuPlaylist, SLOT(newFrame(int)));
+    connect(timeLine, SIGNAL(finished()), this, SLOT(setMenuPlayer_RollIn()));
+
+    timeLine->start();
+}
+
+void MainWindow::menuQuick_ButtonMain_clicked()
+{
+
+    menuQuick->setVisible(false);
+
+    timeLine->disconnect();
+    doAnimation = &MainWindow::menuQuick_RollOut;
+
+    animation = true;
+    connect(timeLine, SIGNAL(frameChanged(int)), menuQuick, SLOT(newFrame(int)));
+    connect(timeLine, SIGNAL(finished()), this, SLOT(setMainMenu_RollIn()));
+
+    timeLine->start();
+}
+
+void MainWindow::menuRadio_ButtonMain_clicked()
+{
+    menuRadio->setImage();
+
+    menuRadio->setVisible(false);
+
+    timeLine->disconnect();
+    doAnimation = &MainWindow::menuRadio_RollOut;
+
+    animation = true;
+    connect(timeLine, SIGNAL(frameChanged(int)), menuRadio, SLOT(newFrame(int)));
+    connect(timeLine, SIGNAL(finished()), this, SLOT(setMainMenu_RollIn()));
+
+    timeLine->start();
+}
+
+void MainWindow::menuSampler_ButtonMain_clicked()
+{
+    menuSampler->setVisible(false);
+
+    timeLine->disconnect();
+    doAnimation = &MainWindow::menuSampler_RollOut;
+
+    animation = true;
+    connect(timeLine, SIGNAL(frameChanged(int)), menuSampler, SLOT(newFrame(int)));
+    connect(timeLine, SIGNAL(finished()), this, SLOT(setMainMenu_RollIn()));
+
+    timeLine->start();
+}
+
+void MainWindow::menuSampler_ButtonPlayer_clicked()
+{
+    menuPlayer->setImage();
+
+    menuSampler->setVisible(false);
+
+    timeLine->disconnect();
+    doAnimation = &MainWindow::menuSampler_RollOut;
+
+    animation = true;
+    connect(timeLine, SIGNAL(frameChanged(int)), menuSampler, SLOT(newFrame(int)));
+    connect(timeLine, SIGNAL(finished()), this, SLOT(setMenuPlayer_RollIn()));
+
+    timeLine->start();
+}
+
 void MainWindow::mousePressEvent(QMouseEvent *event)
 {
     /*Überprüft ob die Maus über einem Kindobjekt gedrückt wurde und
@@ -399,15 +620,34 @@ void MainWindow::paintEvent(QPaintEvent *e)
     }
 }
 
+void MainWindow::playlistSelected(QString pl)
+{
+    menuPlayer->insertNewPlaylist(pl);
+}
+
+void MainWindow::radioSelected(QString r)
+{
+    qDebug() << Q_FUNC_INFO;
+    qDebug() << r;
+    playEngine->play(r);
+}
+
+void MainWindow::samplerSelected(QString sampler)
+{
+    menuPlayer->insertNewSampler(sampler);
+}
+
 void MainWindow::setLarge()
 {
     /*Alles auf 1024 x 768 zoomen*/
     setGeometry(0,0,1024,768);
 
     for(int i = 0; i < listChilds.size(); i++)
-    {
-       listChilds.at(i)->setLarge();
-    }
+       {
+          listChilds.at(i)->setLarge();
+       }
+    animation = true;
+    setMainMenu_RollIn();
 }
 
 void MainWindow::setMainMenu_RollIn()
@@ -478,6 +718,58 @@ void MainWindow::setMenuPlayer_RollIn()
 
     timeLine->setDirection(QTimeLine::Backward);
     doAnimation = &MainWindow::menuPlayer_RollIn;
+
+    timeLine->start();
+}
+
+void MainWindow::setMenuPlaylist_RollIn()
+{
+    timeLine->disconnect();
+
+    connect(timeLine, SIGNAL(frameChanged(int)), menuPlaylist, SLOT(newFrame(int)));
+    connect(timeLine, SIGNAL(finished()), this, SLOT(animationDone()));
+
+    timeLine->setDirection(QTimeLine::Backward);
+    doAnimation = &MainWindow::menuPlaylist_RollIn;
+
+    timeLine->start();
+}
+
+void MainWindow::setMenuSampler_RollIn()
+{
+    timeLine->disconnect();
+
+    connect(timeLine, SIGNAL(frameChanged(int)), menuSampler, SLOT(newFrame(int)));
+    connect(timeLine, SIGNAL(finished()), this, SLOT(animationDone()));
+
+    timeLine->setDirection(QTimeLine::Backward);
+    doAnimation = &MainWindow::menuSampler_RollIn;
+
+    timeLine->start();
+}
+
+void MainWindow::setMenuRadio_RollIn()
+{
+    timeLine->disconnect();
+
+    connect(timeLine, SIGNAL(frameChanged(int)), menuRadio, SLOT(newFrame(int)));
+    connect(timeLine, SIGNAL(finished()), this, SLOT(animationDone()));
+
+    timeLine->setDirection(QTimeLine::Backward);
+    doAnimation = &MainWindow::menuRadio_RollIn;
+
+    timeLine->start();
+}
+
+void MainWindow::setMenuQuick_RollIn()
+{
+    timeLine->disconnect();
+
+    connect(timeLine, SIGNAL(frameChanged(int)), menuQuick, SLOT(newFrame(int)));
+    connect(timeLine, SIGNAL(finished()), this, SLOT(animationDone()));
+
+    timeLine->setDirection(QTimeLine::Backward);
+    doAnimation = &MainWindow::menuQuick_RollIn;
 
     timeLine->start();
 }

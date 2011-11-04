@@ -27,9 +27,14 @@ public:
     virtual QStringList getAlbenFromInterpret(QString s) { return getStringListFromQuery(s); }
     virtual QStringList getInterpreten(QString s) { return getStringListFromQuery(s); }
     virtual QPixmap getCover(QString i, QString a);
+    virtual QStringList getPlaylist();
+    virtual QStringList getSampler();
     virtual QString getStringFromQuery(QString queryString);
     virtual QStringList getStringListFromQuery(QString queryString);
     virtual QList<MetaPaket> getTracksFromAlbum(QString interpret, QString album);
+    virtual QList<MetaPaket> getTracksFromPlaylist(QString playlist);
+    virtual QList<MetaPaket> getTracksFromSampler(QString sampler);
+    virtual QList<MetaPaket> getTracksFromQuick(QString year);
     virtual void openDataBase() {}
 
     void setEmbeddedPath(QString ep) { embeddedPath = ep; }

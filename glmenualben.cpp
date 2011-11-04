@@ -68,6 +68,9 @@ void GlMenuAlben::buttonPictureFlow_Tracks_Clicked()
 {
     if(!tracks)
     {
+        //qDebug() << stringInterpret;
+        //qDebug() << pictureFlow->getCenterAlbum();
+
         trackList->setTracks(db->getTracksFromAlbum(stringInterpret, pictureFlow->getCenterAlbum()));
         trackList->setVisible(true);
 
@@ -156,17 +159,16 @@ void GlMenuAlben::newInterpret(QString interpret)
     pictureFlow->clear();
     pictureFlow->setPercent(0);
 
-    QString album;
     QPixmap pixmap;
-    foreach (album, alben)
+
+    for(int i = 0; i < alben.size(); i++)
     {
-        pixmap = db->getCover(interpret, album);
+        pixmap = db->getCover(interpret, alben.at(i));
         pictureFlow->addImage(pixmap.toImage());
     }
+
     pictureFlow->setAlben(alben);
     pictureFlow->setImage();
-
-    //newChildToDraw(this);
 }
 
 void GlMenuAlben::pictureFlow_animationDone()

@@ -13,6 +13,10 @@
 #include "glmenugenre.h"
 #include "glmenualben.h"
 #include "glmenuplayer.h"
+#include "glmenuplaylist.h"
+#include "glmenuquick.h"
+#include "glmenusampler.h"
+#include "glmenuradio.h"
 #include "globject.h"
 #include "play_engine.h"
 
@@ -34,6 +38,10 @@ private:
     GlMenuInterpret* menuInterpret;
     GlMenuAlben* menuAlben;
     GlMenuPlayer* menuPlayer;
+    GlMenuPlaylist* menuPlaylist;
+    GlMenuQuick* menuQuick;
+    GlMenuRadio* menuRadio;
+    GlMenuSampler* menuSampler;
 
 public:
     MainWindow(QWidget *parent = 0, const QGLWidget * shareWidget = 0, Qt::WindowFlags f = 0 );
@@ -51,6 +59,14 @@ public:
     void menuInterpret_RollOut(QPainter* p) { menuInterpret->rollOut(p); }
     void menuPlayer_RollIn(QPainter* p) { menuPlayer->rollIn(p); }
     void menuPlayer_RollOut(QPainter* p) { menuPlayer->rollOut(p); }
+    void menuPlaylist_RollIn(QPainter* p) { menuPlaylist->rollIn(p);}
+    void menuPlaylist_RollOut(QPainter* p) { menuPlaylist->rollOut(p);}
+    void menuRadio_RollIn(QPainter* p) { menuRadio->rollIn(p);}
+    void menuRadio_RollOut(QPainter* p) { menuRadio->rollOut(p);}
+    void menuSampler_RollIn(QPainter* p) { menuSampler->rollIn(p);}
+    void menuSampler_RollOut(QPainter* p) { menuSampler->rollOut(p);}
+    void menuQuick_RollIn(QPainter* p) { menuQuick->rollIn(p); }
+    void menuQuick_RollOut(QPainter* p) { menuQuick->rollOut(p); }
 
 public slots:
     void albumSelected(QString, QString);
@@ -63,6 +79,10 @@ public slots:
     void mainMenu_ButtonGenre_clicked();
     void mainMenu_ButtonInterpret_clicked();
     void mainMenu_ButtonPlayer_clicked();
+    void mainMenu_ButtonPlaylist_clicked();
+    void mainMenu_ButtonQuick_clicked();
+    void mainMenu_ButtonSampler_clicked();
+    void mainMenu_ButtonRadio_clicked();
 
     void menuAlben_ButtonInterpret_clicked();
     void menuAlben_ButtonMain_clicked();
@@ -73,12 +93,31 @@ public slots:
 
     void menuPlayer_ButtonMain_clicked();
 
+    void menuPlaylist_ButtonMain_clicked();
+    void menuPlaylist_ButtonPlayer_clicked();
+
+    void menuQuick_ButtonMain_clicked();
+
+    void menuRadio_ButtonMain_clicked();
+
+    void menuSampler_ButtonMain_clicked();
+    void menuSampler_ButtonPlayer_clicked();
+
+    void playlistSelected(QString);
+
+    void radioSelected(QString);
+
+    void samplerSelected(QString);
     void setLarge();
     void setMainMenu_RollIn();
     void setMenuAlben_RollIn();
     void setMenuGenre_RollIn();
     void setMenuInterpret_RollIn();
     void setMenuPlayer_RollIn();
+    void setMenuPlaylist_RollIn();
+    void setMenuRadio_RollIn();
+    void setMenuSampler_RollIn();
+    void setMenuQuick_RollIn();
 
     void titleSelected(MetaPaket);
 

@@ -26,10 +26,14 @@ public:
     QStringList getAlbenFromInterpret(QString s);
     QPixmap getCover(QString i, QString a);
     QStringList getInterpreten(QString s);
+    QStringList getPlaylist();
+    QStringList getSampler();
     QString getStringFromQuery(QString queryString);
     QStringList getStringListFromQuery(QString queryString);
     QList<MetaPaket> getTracksFromAlbum(QString interpret, QString album);
-
+    QList<MetaPaket> getTracksFromPlaylist(QString playlist);
+    QList<MetaPaket> getTracksFromSampler(QString sampler);
+    QList<MetaPaket> getTracksFromQuick(QString year);
     void openDataBase();
 
 

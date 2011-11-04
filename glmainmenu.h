@@ -44,6 +44,10 @@ signals:
     void buttonGenre_clicked();
     void buttonInterpret_clicked();
     void buttonPlayer_clicked();
+    void buttonPlaylist_clicked();
+    void buttonQuick_clicked();
+    void buttonSampler_clicked();
+    void buttonRadio_clicked();
 };
 
 #endif // GLMAINMENU_H

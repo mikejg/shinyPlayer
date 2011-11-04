@@ -60,7 +60,7 @@ public:
     QImage getListImage(bool fullSize = false);
 
     void insertItem(QString text);
-    void insertItem(QStringList l);
+    void insertItem(QStringList l, bool a = true);
 
     void mousePressEvent (QMouseEvent * event);
     void mouseReleaseEvent ( QMouseEvent * event );

@@ -21,5 +21,8 @@
         <file>images/mainBalkenOben.png</file>
         <file>images/mainBalkenUnten.png</file>
         <file>images/home.png</file>
+        <file>images/clear.png</file>
+        <file>images/radio.png</file>
+        <file>images/backgroundRadio.png</file>
     </qresource>
 </RCC>

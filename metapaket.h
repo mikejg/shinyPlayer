@@ -5,6 +5,8 @@
 
 struct MetaPaket
 {
+    bool isEmpty;
+
     QString interpret;
     QString album;
     QString title;

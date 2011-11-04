@@ -21,6 +21,12 @@ public:
     Play_Engine(QObject* parent = 0);
 
     void play(QString path);
+
+public slots:
+    void pause();
+
+signals:
+    void finished();
 };
 
 #endif // PLAY_ENGINE_H

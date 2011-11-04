@@ -78,6 +78,7 @@ void GlPictureFlow::done()
 
 void GlPictureFlow::draw(QPainter *p)
 {
+    //qDebug() << Q_FUNC_INFO << "start";
     p->setBrush(Qt::black);
     p->drawRect(geometry());
 
@@ -85,7 +86,9 @@ void GlPictureFlow::draw(QPainter *p)
     buttonLeft->draw(p);
     buttonTracks->draw(p);
 
-    (this->*for_backward)(p);
+    if(!alben.isEmpty())
+        (this->*for_backward)(p);
+    //qDebug() << Q_FUNC_INFO << "end";
 }
 
 void GlPictureFlow::draw_backward(QPainter* p)
@@ -205,6 +208,7 @@ void GlPictureFlow::draw_backward(QPainter* p)
 
 void GlPictureFlow::draw_forward(QPainter *p)
 {
+    //qDebug() << Q_FUNC_INFO << "start";
     QPoint point;
     int dist;
     int i;
@@ -217,7 +221,7 @@ void GlPictureFlow::draw_forward(QPainter *p)
     p->setFont(font);
 
        p->setPen(QColor(255,255,255,125));
-       p->drawText(QRect(0,0,getWidth(),30),Qt::AlignHCenter,alben.at(centerImage));
+    p->drawText(QRect(0,0,getWidth(),30),Qt::AlignHCenter,alben.at(centerImage));
     centerAlbum = alben.at(centerImage);
 
     i = centerImage - 4;
@@ -320,6 +324,7 @@ void GlPictureFlow::draw_forward(QPainter *p)
         angle = 50 - int((getPercent()/100.) * 50);
         t_drawImageAt(p, point, images.at(i), size,size*1.5,angle,0);
       }
+    //qDebug() << Q_FUNC_INFO << "end";
 }
 
 void GlPictureFlow::t_drawImageAt(QPainter *p, const QPoint &loc,const QImage &image, int w, int h, int angle, int posDif)
