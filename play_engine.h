@@ -7,6 +7,8 @@
 #include <phonon/mediaobject.h>
 #include <phonon/audiooutput.h>
 
+#include "metapaket.h"
+
 using namespace Phonon;
 
 class Play_Engine : public QObject
@@ -17,10 +19,16 @@ private:
     MediaObject* m_media;
     AudioOutput* output;
 
+    MetaPaket currentMP;
+
 public:
     Play_Engine(QObject* parent = 0);
 
-    void play(QString path);
+    void play(MetaPaket mp);
+    void play(QString s);
+
+    QString coverUrl() { return currentMP.coverUrl; }
+    MetaPaket getMetaPaket() { return currentMP; }
 
 public slots:
     void pause();

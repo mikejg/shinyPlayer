@@ -105,6 +105,7 @@ public slots:
 
     void playlistSelected(QString);
 
+    void quickSelected(int, int, uint, int, bool);
     void radioSelected(QString);
 
     void samplerSelected(QString);

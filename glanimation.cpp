@@ -27,6 +27,43 @@ void GlAnimation::draw(QPainter *p)
     (this->*doAnimation)(p);
 }
 
+
+void GlAnimation::coverNext(QPainter *p)
+{
+    QRect rect = geometry();
+    QImage tmpImg1, tmpImg2;
+    int imageWidth;
+    int per = getPercent();
+
+    if(per < 0 || per > 100) return;
+    p->fillRect(rect, Qt::black);
+
+    imageWidth = (int)((per/100.) * getImage().width());
+    tmpImg1 = getImage().copy(0, 0, getImage().width() - imageWidth, getImage().height());
+    tmpImg2 = image2.copy(image2.width() - imageWidth, 0, imageWidth, image2.height());
+
+    p->drawImage(geometry().x() + imageWidth, geometry().y(), tmpImg1);
+    p->drawImage(geometry().x(), geometry().y(), tmpImg2);
+}
+
+void GlAnimation::coverPrev(QPainter *p)
+{
+    QRect rect = geometry();
+    QImage tmpImg1, tmpImg2;
+    int imageWidth;
+    int per = getPercent();
+
+    if(per < 0 || per > 100) return;
+    p->fillRect(rect, Qt::black);
+
+    imageWidth = (int)((per/100.) * getImage().width());
+    tmpImg1 = getImage().copy(imageWidth, 0, getImage().width() - imageWidth, getImage().height());
+    tmpImg2 = image2.copy(0, 0, imageWidth, image2.height());
+
+    p->drawImage(geometry().x(), geometry().y(), tmpImg1);
+    p->drawImage(geometry().x() + geometry().width() - imageWidth, geometry().y(), tmpImg2);
+}
+
 void GlAnimation::jumpDown(QPainter *p)
 {
     int per = getPercent();
@@ -138,6 +175,28 @@ void GlAnimation::scrollUp(QPainter *p)
     tmpImg = image2.copy(0,0,image2.width(), t_height);
 
     p->drawImage(geometry().x() + xOffset, t_y, tmpImg);
+}
+
+void GlAnimation::startCoverNext()
+{
+    timeLine->disconnect();
+    timeLine->setDirection(QTimeLine::Forward);
+    connect(timeLine, SIGNAL(finished()), this, SLOT(done()));
+    connect(timeLine, SIGNAL(frameChanged(int)), this, SLOT(newPercent(int)));
+
+    doAnimation = &GlAnimation::coverNext;
+    timeLine->start();
+}
+
+void GlAnimation::startCoverPrev()
+{
+    timeLine->disconnect();
+    timeLine->setDirection(QTimeLine::Forward);
+    connect(timeLine, SIGNAL(finished()), this, SLOT(done()));
+    connect(timeLine, SIGNAL(frameChanged(int)), this, SLOT(newPercent(int)));
+
+    doAnimation = &GlAnimation::coverPrev;
+    timeLine->start();
 }
 
 void GlAnimation::startRotation()

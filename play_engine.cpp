@@ -1,4 +1,5 @@
 #include "play_engine.h"
+#include <QDebug>
 
 Play_Engine::Play_Engine(QObject* parent) : QObject(parent)
 {
@@ -24,11 +25,27 @@ void Play_Engine::pause()
     }
 }
 
-void Play_Engine::play(QString path)
+void Play_Engine::play(MetaPaket mp)
 {
+    qDebug() << Q_FUNC_INFO;
+    qDebug() << mp.url;
+
+    currentMP = mp;
     m_media->stop();
 
-    MediaSource source(path);
+    MediaSource source(mp.url);
+    m_media->setCurrentSource(source);
+
+    m_media->play();
+}
+
+void Play_Engine::play(QString s)
+{
+    qDebug() << Q_FUNC_INFO;
+    qDebug() << s;
+    m_media->stop();
+
+    MediaSource source(s);
     m_media->setCurrentSource(source);
 
     m_media->play();

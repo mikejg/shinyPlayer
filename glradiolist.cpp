@@ -20,12 +20,14 @@ GlRadioList::GlRadioList(GlObject* parent) : GlObject(parent)
     item->setText("Radio Unartig");
     item->setUrl("http://www.unart.tv:8000");
     connect(item, SIGNAL(clicked(QString)), this, SIGNAL(radioItemClicked(QString)));
+    connect(item, SIGNAL(clicked(GlRadioListItem*)), this, SLOT(itemClicked(GlRadioListItem*)));
     list.append(item);
 
     item = new GlRadioListItem(this);
     item->setText("SWR 3");
     item->setUrl("http://swr.ic.llnwd.net/stream/swr_mp3_m_swr3a");
     connect(item, SIGNAL(clicked(QString)), this, SIGNAL(radioItemClicked(QString)));
+    connect(item, SIGNAL(clicked(GlRadioListItem*)), this, SLOT(itemClicked(GlRadioListItem*)));
     list.append(item);
 }
 
@@ -66,12 +68,18 @@ void GlRadioList::draw(QPainter *p)
             list.at(i)->setGeometry(re.x(),re.y(), re.width(), re.height());
             p->drawText(re, Qt::AlignHCenter, list.at(i)->getText());
 
-            if( (i)  == currentItem)
+            if( list.at(i)  == cItem)
               {
-                p->fillRect(QRect(10, getY() + 2 + itemHeight * i, getWidth() - 20 , itemHeight - 4), QColor(0,0,0,125));
+                p->fillRect(re, QColor(0,0,0,125));
               }
         }
     }
+}
+
+void GlRadioList::itemClicked(GlRadioListItem* item)
+{
+    cItem = item;
+    newChildToDraw(this);
 }
 
 void GlRadioList::mouseReleaseEvent(QMouseEvent *event)
@@ -115,4 +123,5 @@ void GlRadioListItem::mouseReleaseEvent(QMouseEvent *event)
     Q_UNUSED(event);
 
     clicked(url);
+    clicked(this);
 }

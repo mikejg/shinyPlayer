@@ -141,6 +141,7 @@ MainWindow::MainWindow(QWidget * parent, const QGLWidget * shareWidget, Qt::Wind
     connect(menuQuick, SIGNAL(newChildToDraw(GlObject*)), this, SLOT(newChildToDraw(GlObject*)));
     connect(menuQuick, SIGNAL(update()), this, SLOT(update()));
     connect(menuQuick, SIGNAL(buttonMain_clicked()), this, SLOT(menuQuick_ButtonMain_clicked()));
+    connect(menuQuick, SIGNAL(quickSelected(int,int,uint,int,bool)), this, SLOT(quickSelected(int,int,uint,int,bool)));
 
     menuRadio = new GlMenuRadio();
     menuRadio->setVisible(false);
@@ -625,10 +626,16 @@ void MainWindow::playlistSelected(QString pl)
     menuPlayer->insertNewPlaylist(pl);
 }
 
-void MainWindow::radioSelected(QString r)
+void MainWindow::quickSelected(int y1, int y2, uint pastTime, int point, bool boolRandom)
 {
     qDebug() << Q_FUNC_INFO;
-    qDebug() << r;
+    menuPlayer->insertNewQuick(y1, y2, pastTime, point, boolRandom);
+}
+
+void MainWindow::radioSelected(QString r)
+{
+    //qDebug() << Q_FUNC_INFO;
+    //qDebug() << r;
     playEngine->play(r);
 }
 

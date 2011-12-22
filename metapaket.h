@@ -13,6 +13,8 @@ struct MetaPaket
 
     QString url;
     QString coverUrl;
+    int points;
+    int urlkey;
 };
 
 #endif // METAPAKET_H

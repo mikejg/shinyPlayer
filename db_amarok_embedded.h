@@ -12,6 +12,13 @@
 #include <QString>
 #include <QDir>
 
+#include <fileref.h>
+#include <mpegfile.h>
+#include <tag.h>
+#include <attachedpictureframe.h>
+#include <id3v2tag.h>
+
+
 class DB_Amarok_Embedded : public Database
 {
     Q_OBJECT
@@ -23,6 +30,8 @@ private:
 public:
     DB_Amarok_Embedded(QObject* parent);
 
+    QString fetchCover(QString uuid);
+
     QStringList getAlbenFromInterpret(QString s);
     QPixmap getCover(QString i, QString a);
     QStringList getInterpreten(QString s);
@@ -33,10 +42,10 @@ public:
     QList<MetaPaket> getTracksFromAlbum(QString interpret, QString album);
     QList<MetaPaket> getTracksFromPlaylist(QString playlist);
     QList<MetaPaket> getTracksFromSampler(QString sampler);
-    QList<MetaPaket> getTracksFromQuick(QString year);
+    QList<MetaPaket> getTracksFromQuick(int y1, int y2, uint t, int p, bool br);
     void openDataBase();
 
-
+    void setNewPoints(MetaPaket mp);
 };
 
 #endif // DB_AMAROK_EMBEDDED_H

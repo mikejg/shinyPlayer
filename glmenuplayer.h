@@ -3,8 +3,11 @@
 
 #include "globject.h"
 #include "gltracklist.h"
+#include "glcoverview.h"
+#include "glinfoview.h"
 #include "glbutton.h"
 #include "glanimation.h"
+#include "glcombobox.h"
 #include "settings.h"
 #include "metapaket.h"
 #include "play_engine.h"
@@ -15,6 +18,8 @@ class GlMenuPlayer : public GlObject
 private:
     GlAnimation* animation;
     GlTrackList* trackList;
+    GlCoverView* coverView;
+    GlInfoView* infoView;
     GlButton* buttonMain;
     GlButton* buttonDown;
     GlButton* buttonUp;
@@ -22,9 +27,15 @@ private:
     GlButton* buttonBack;
     GlButton* buttonPause;
     GlButton* buttonClear;
+    GlComboBox* comboBoxView;
+    QString cbViewString;
 
     Database* db;
     Play_Engine* playEngine;
+    QString infoString;
+
+    QColor fontColor;
+    int fontSize;
 
 public:
     GlMenuPlayer(GlObject* parent = 0);
@@ -33,6 +44,7 @@ public:
 
     void insertNewAlbum(QString interpret, QString album);
     void insertNewPlaylist(QString pl);
+    void insertNewQuick(int y1, int y2, uint pastTime, int point, bool boolRandom);
     void insertNewSampler(QString sampler);
     void insertNewTitle(MetaPaket mp);
 
@@ -49,9 +61,12 @@ public:
 public slots:
     void buttonDown_clicked();
     void buttonUp_clicked();
+    void comboBoxOpen(GlComboBox* cb);
+    void comboBoxClosed(GlComboBox* cb);
     void nextSong();
     void playTrackListItem(MetaPaket);
     void prevSong();
+    void setNewPoints(MetaPaket);
 
 signals:
     void buttonMain_clicked();

@@ -13,6 +13,7 @@ GlComboBox::GlComboBox(GlObject* parent) : GlObject(parent)
 
     isOpen = false;
     expandUp = false;
+    fill = true;
 }
 
 void GlComboBox::clear()
@@ -42,7 +43,8 @@ void GlComboBox::draw(QPainter *p)
                              getX() + getWidth(), orgY + closedHeight/2);
     gradient.setColorAt(0, gradientColorAt0);
     gradient.setColorAt(1, gradientColorAt1);
-    p->setBrush(QBrush(gradient));
+    if(fill)
+        p->setBrush(QBrush(gradient));
     QPainterPath pa;
     pa.addRoundedRect(orgRect, borderRadius, borderRadius);
     pen.setWidth(border); //Strichbreite

@@ -1,4 +1,5 @@
 #include "glmenuquick.h"
+#include "QDateTime"
 
 GlMenuQuick::GlMenuQuick(GlObject* parent) : GlObject(parent)
 {
@@ -105,7 +106,39 @@ void GlMenuQuick::buttonClear_clicked()
 void GlMenuQuick::buttonOK_clicked()
 {
     qDebug() << Q_FUNC_INFO;
-    db->getTracksFromQuick("2000");
+
+    int y1 = 0;
+    int y2 = 0;
+    int point = 0;
+    QDateTime time = QDateTime::currentDateTime();
+    uint pastTime = 0;
+    bool boolRandom = false;
+
+    if(comboBoxYear->getText() == QString("1960 - 1970")) { y1 = 1960; y2 = 1970; }
+    if(comboBoxYear->getText() == QString("1970 - 1980")) { y1 = 1970; y2 = 1980; }
+    if(comboBoxYear->getText() == QString("1980 - 1990")) { y1 = 1980; y2 = 1990; }
+    if(comboBoxYear->getText() == QString("1990 - 2000")) { y1 = 1990; y2 = 2000; }
+    if(comboBoxYear->getText() == QString("2000 - 2010")) { y1 = 2000; y2 = 2010; }
+    if(comboBoxYear->getText() == QString("2010 - 2020")) { y1 = 2010; y2 = 2020; }
+
+    if(comboBoxAdded->getText() == QString(" 1 Week")) {time = time.addDays(-7); pastTime = time.toTime_t();}
+    if(comboBoxAdded->getText() == QString(" 2 Week")) {time = time.addDays(-14); pastTime = time.toTime_t();}
+    if(comboBoxAdded->getText() == QString(" 3 Week")) {time = time.addDays(-21); pastTime = time.toTime_t();}
+    if(comboBoxAdded->getText() == QString(" 1 Months")) {time = time.addMonths(-1); pastTime = time.toTime_t();}
+    if(comboBoxAdded->getText() == QString(" 3 Months")) {time = time.addMonths(-3); pastTime = time.toTime_t();}
+    if(comboBoxAdded->getText() == QString(" 6 Months")) {time = time.addMonths(-6); pastTime = time.toTime_t();}
+    if(comboBoxAdded->getText() == QString(" 9 Months")) {time = time.addMonths(-9); pastTime = time.toTime_t();}
+    if(comboBoxAdded->getText() == QString(" last year")) {time = time.addMonths(-12); pastTime = time.toTime_t();}
+
+    if(comboBoxPoints->getText() == QString("2 or greater")) { point = 2; };
+    if(comboBoxPoints->getText() == QString("4 or greater")) { point = 4; };
+    if(comboBoxPoints->getText() == QString("6 or greater")) { point = 6; };
+    if(comboBoxPoints->getText() == QString("8 or greater")) { point = 8; };
+
+    if(comboBoxRandom->getText() == QString("On")) boolRandom = true;
+
+    quickSelected(y1, y2, pastTime, point, boolRandom);
+    //db->getTracksFromQuick(y1, y2, pastTime, point);
 }
 
 void GlMenuQuick::draw(QPainter *p)

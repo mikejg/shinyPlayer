@@ -25,6 +25,7 @@ public:
 
 signals:
     void clicked(QString);
+    void clicked(GlRadioListItem*);
 
 };
 
@@ -43,6 +44,7 @@ private:
     int fontSize;
     int itemHeight;
     int currentItem;
+    GlRadioListItem* cItem;
 
     QList<GlRadioListItem*> list;
 
@@ -57,6 +59,9 @@ public:
 
 signals:
     void radioItemClicked(QString);
+
+public slots:
+    void itemClicked(GlRadioListItem*);
 };
 
 #endif // GLRADIOLIST_H

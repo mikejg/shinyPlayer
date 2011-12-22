@@ -23,6 +23,8 @@ private:
 public:
     Database(QObject* parent);
 
+    virtual QString fetchCover(QString uuid) {Q_UNUSED(uuid); return QString(":/images/noCover.png");}
+
     QString getEmbeddedPath() { return embeddedPath; }
     virtual QStringList getAlbenFromInterpret(QString s) { return getStringListFromQuery(s); }
     virtual QStringList getInterpreten(QString s) { return getStringListFromQuery(s); }
@@ -34,10 +36,11 @@ public:
     virtual QList<MetaPaket> getTracksFromAlbum(QString interpret, QString album);
     virtual QList<MetaPaket> getTracksFromPlaylist(QString playlist);
     virtual QList<MetaPaket> getTracksFromSampler(QString sampler);
-    virtual QList<MetaPaket> getTracksFromQuick(QString year);
+    virtual QList<MetaPaket> getTracksFromQuick(int y1, int y2, uint t, int p, bool br);
     virtual void openDataBase() {}
 
     void setEmbeddedPath(QString ep) { embeddedPath = ep; }
+    virtual void setNewPoints(MetaPaket mp);
 };
 
 #endif // DATABASE_H

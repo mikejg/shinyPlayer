@@ -26,6 +26,9 @@ public:
     void (GlAnimation::*doAnimation)(QPainter* p);
     void draw(QPainter *p);
 
+    void coverNext(QPainter* p);
+    void coverPrev(QPainter* p);
+
     void jumpDown(QPainter* p);
     void jumpUp(QPainter* p);
 
@@ -38,6 +41,8 @@ public:
     void setImage2(QImage i) { image2 = i; }
     void setXoffset(int xo) { xOffset = xo; }
 
+    void startCoverNext();
+    void startCoverPrev();
     void startJumpDown();
     void startJumpUp();
     void startRotation();

@@ -49,6 +49,7 @@ public:
 
 signals:
     void buttonMain_clicked();
+    void quickSelected(int, int, uint, int, bool);
 
 public slots:
     void comboBoxOpen(GlComboBox*);

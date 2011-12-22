@@ -32,7 +32,9 @@ SOURCES += main.cpp \
     glcombobox.cpp \
     glmenuquick.cpp \
     glrulewidget.cpp \
-    gltextlabel.cpp
+    gltextlabel.cpp \
+    glcoverview.cpp \
+    glinfoview.cpp
 HEADERS += mainwindow.h \
     dialogsetting.h \
     settings.h \
@@ -60,10 +62,17 @@ HEADERS += mainwindow.h \
     glcombobox.h \
     glmenuquick.h \
     glrulewidget.h \
-    gltextlabel.h
+    gltextlabel.h \
+    glcoverview.h \
+    glinfoview.h
 FORMS += mainwindow.ui
 RESOURCES += pixmaps.qrc
 INCLUDEPATH += /usr/include/mysql
 LIBS += -L/usr/lib/mysql \
     -lmysqld \
     -lcrypt
+
+INCLUDEPATH += /usr/include/taglib
+
+LIBS += -L/usr/lib \
+    -ltag

@@ -56,9 +56,13 @@ QList<MetaPaket> Database::getTracksFromPlaylist(QString playlist)
     return dummy;
 }
 
-QList<MetaPaket> Database::getTracksFromQuick(QString year)
+QList<MetaPaket> Database::getTracksFromQuick(int y1, int y2, uint t, int p, bool br)
 {
-    Q_UNUSED (year);
+    Q_UNUSED (y1);
+    Q_UNUSED (y2);
+    Q_UNUSED (t);
+    Q_UNUSED (p);
+    Q_UNUSED (br);
 
     QList<MetaPaket> dummy;
     return dummy;
@@ -70,4 +74,9 @@ QList<MetaPaket> Database::getTracksFromSampler(QString sampler)
 
     QList<MetaPaket> dummy;
     return dummy;
+}
+
+void Database::setNewPoints(MetaPaket mp)
+{
+    Q_UNUSED(mp);
 }

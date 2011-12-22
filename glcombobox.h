@@ -44,6 +44,7 @@ private:
 
     bool isOpen;
     bool expandUp;
+    bool fill;
 
     QList<GlComboBoxItem*> list;
 
@@ -64,6 +65,9 @@ public:
     void setGeometry(int posX, int posY, int w, int h);
 
     QString getText() { return list.first()->getText(); }
+
+    void setFill(bool f) { fill = f; }
+    void setFirstText(QString s) { list.first()->setText(s); }
 
 public slots:
     void itemClicked(QString);
