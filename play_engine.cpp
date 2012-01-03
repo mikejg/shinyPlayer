@@ -5,9 +5,14 @@ Play_Engine::Play_Engine(QObject* parent) : QObject(parent)
 {
     m_media = new MediaObject(this);
     output = new AudioOutput(Phonon::MusicCategory, this);
+    dataout = new AudioDataOutput(this);
     createPath(m_media, output);
+    createPath(m_media, dataout);
 
     connect(m_media, SIGNAL(finished()), this, SIGNAL(finished()));
+    connect(dataout, SIGNAL(dataReady(const QMap<Phonon::AudioDataOutput::Channel, QVector<qint16> >&)),
+            this, SIGNAL(dataReady(const QMap<Phonon::AudioDataOutput::Channel,QVector<qint16> >&)));
+
 }
 
 void Play_Engine::pause()

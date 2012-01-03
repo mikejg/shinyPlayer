@@ -19,7 +19,7 @@ MainWindow::MainWindow(QWidget * parent, const QGLWidget * shareWidget, Qt::Wind
     timeLine->setCurveShape(QTimeLine::EaseInCurve);
 
     set = new Settings;
-    setGeometry(0,0,800, 600);
+    setGeometry(2,2,796, 596);
 
     setting = new DialogSetting(this,0,set);
     QStringList* errorList = new QStringList();

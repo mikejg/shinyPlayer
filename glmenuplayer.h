@@ -8,6 +8,7 @@
 #include "glbutton.h"
 #include "glanimation.h"
 #include "glcombobox.h"
+#include "glvizualizer.h"
 #include "settings.h"
 #include "metapaket.h"
 #include "play_engine.h"
@@ -20,6 +21,7 @@ private:
     GlTrackList* trackList;
     GlCoverView* coverView;
     GlInfoView* infoView;
+    GlVizualizer* vizualizer;
     GlButton* buttonMain;
     GlButton* buttonDown;
     GlButton* buttonUp;

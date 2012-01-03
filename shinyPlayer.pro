@@ -34,7 +34,9 @@ SOURCES += main.cpp \
     glrulewidget.cpp \
     gltextlabel.cpp \
     glcoverview.cpp \
-    glinfoview.cpp
+    glinfoview.cpp \
+    fht.cpp \
+    glvizualizer.cpp
 HEADERS += mainwindow.h \
     dialogsetting.h \
     settings.h \
@@ -64,7 +66,9 @@ HEADERS += mainwindow.h \
     glrulewidget.h \
     gltextlabel.h \
     glcoverview.h \
-    glinfoview.h
+    glinfoview.h \
+    fht.h \
+    glvizualizer.h
 FORMS += mainwindow.ui
 RESOURCES += pixmaps.qrc
 INCLUDEPATH += /usr/include/mysql
@@ -76,3 +80,6 @@ INCLUDEPATH += /usr/include/taglib
 
 LIBS += -L/usr/lib \
     -ltag
+
+LIBS += -L/usr/lib \
+    -lz

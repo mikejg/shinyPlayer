@@ -1,4 +1,5 @@
 #include "glmenuplayer.h"
+#include <QTimer>
 
 GlMenuPlayer::GlMenuPlayer(GlObject* parent) : GlObject(parent)
 {
@@ -21,6 +22,11 @@ GlMenuPlayer::GlMenuPlayer(GlObject* parent) : GlObject(parent)
     infoView->setGeometry(2,90,796,438);
     infoView->setVisible(false);
     connect(infoView, SIGNAL(setNewPoints(MetaPaket)), this, SLOT(setNewPoints(MetaPaket)));
+
+    vizualizer = new GlVizualizer(this);
+    vizualizer->setGeometry(2,90,796,438);
+    vizualizer->setVisible(false);
+    vizualizer->setStopIt(true);
 
     buttonMain = new GlButton(this);
     buttonMain->setGeometry(3,3,48,48);
@@ -60,6 +66,7 @@ GlMenuPlayer::GlMenuPlayer(GlObject* parent) : GlObject(parent)
     comboBoxView->insertItem(QString("List"));
     comboBoxView->insertItem(QString("Cover"));
     comboBoxView->insertItem(QString("Info"));
+    comboBoxView->insertItem(QString("Viz"));
     cbViewString = "List";
 
     animation = new GlAnimation(this);
@@ -126,6 +133,8 @@ void GlMenuPlayer::comboBoxClosed(GlComboBox* cb)
     trackList->setVisible(false);
     coverView->setVisible(false);
     infoView->setVisible(false);
+    vizualizer->setStopIt(true);
+    vizualizer->setVisible(false);
 
     if(cbViewString == QString("List"))
     {
@@ -166,6 +175,15 @@ void GlMenuPlayer::comboBoxClosed(GlComboBox* cb)
         infoView->setVisible(true);
         infoView->setImage();
         animation->setImage2(infoView->getImage());
+    }
+
+    if(cb->getText() == QString("Viz"))
+    {
+        vizualizer->setVisible(true);
+        vizualizer->setImage();
+        vizualizer->setStopIt(false);
+        animation->setImage2(vizualizer->getImage());
+        QTimer::singleShot(500, vizualizer, SLOT(doit()));
     }
 
     cbViewString = cb->getText();
@@ -474,4 +492,6 @@ void GlMenuPlayer::setPlayEngine(Play_Engine *pe)
 
     connect(playEngine, SIGNAL(finished()), this, SLOT(nextSong()));
     connect(buttonPause, SIGNAL(clicked()), playEngine, SLOT(pause()));
+    connect(playEngine, SIGNAL(dataReady(QMap<Phonon::AudioDataOutput::Channel,QVector<qint16> >)),
+            vizualizer, SLOT(insertScope(QMap<Phonon::AudioDataOutput::Channel,QVector<qint16> >)));
 }

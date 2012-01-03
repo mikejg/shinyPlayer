@@ -6,6 +6,7 @@
 #include <phonon/phononnamespace.h>
 #include <phonon/mediaobject.h>
 #include <phonon/audiooutput.h>
+#include <phonon/audiodataoutput.h>
 
 #include "metapaket.h"
 
@@ -18,7 +19,7 @@ class Play_Engine : public QObject
 private:
     MediaObject* m_media;
     AudioOutput* output;
-
+    AudioDataOutput* dataout;
     MetaPaket currentMP;
 
 public:
@@ -35,6 +36,7 @@ public slots:
 
 signals:
     void finished();
+    void dataReady(const QMap<Phonon::AudioDataOutput::Channel,QVector<qint16> >&);
 };
 
 #endif // PLAY_ENGINE_H
