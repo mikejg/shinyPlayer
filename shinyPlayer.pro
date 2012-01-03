@@ -31,7 +31,7 @@ SOURCES += main.cpp \
     glradiolist.cpp \
     glcombobox.cpp \
     glmenuquick.cpp \
-    glrulewidget.cpp \
+    #glrulewidget.cpp \
     gltextlabel.cpp \
     glcoverview.cpp \
     glinfoview.cpp \
@@ -63,7 +63,7 @@ HEADERS += mainwindow.h \
     glradiolist.h \
     glcombobox.h \
     glmenuquick.h \
-    glrulewidget.h \
+    #glrulewidget.h \
     gltextlabel.h \
     glcoverview.h \
     glinfoview.h \
