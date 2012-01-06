@@ -6,6 +6,7 @@
 #include <QList>
 #include <QTimeLine>
 
+#include "usbconfig.h"
 #include "dialogsetting.h"
 #include "settings.h"
 #include "glmainmenu.h"
@@ -19,6 +20,12 @@
 #include "glmenuradio.h"
 #include "globject.h"
 #include "play_engine.h"
+
+extern "C"
+{
+#include "hiddata.h"
+}
+
 
 class MainWindow : public QGLWidget {
     Q_OBJECT
@@ -43,6 +50,7 @@ private:
     GlMenuRadio* menuRadio;
     GlMenuSampler* menuSampler;
 
+    usbDevice_t *dev;
 public:
     MainWindow(QWidget *parent = 0, const QGLWidget * shareWidget = 0, Qt::WindowFlags f = 0 );
     ~MainWindow();
@@ -67,6 +75,8 @@ public:
     void menuSampler_RollOut(QPainter* p) { menuSampler->rollOut(p);}
     void menuQuick_RollIn(QPainter* p) { menuQuick->rollIn(p); }
     void menuQuick_RollOut(QPainter* p) { menuQuick->rollOut(p); }
+
+    usbDevice_t* openDevice(void);
 
 public slots:
     void albumSelected(QString, QString);

@@ -36,7 +36,8 @@ SOURCES += main.cpp \
     glcoverview.cpp \
     glinfoview.cpp \
     fht.cpp \
-    glvizualizer.cpp
+    glvizualizer.cpp \
+    hiddata.c
 HEADERS += mainwindow.h \
     dialogsetting.h \
     settings.h \
@@ -68,7 +69,9 @@ HEADERS += mainwindow.h \
     glcoverview.h \
     glinfoview.h \
     fht.h \
-    glvizualizer.h
+    glvizualizer.h \
+    hiddata.h \
+    usbconfig.h
 FORMS += mainwindow.ui
 RESOURCES += pixmaps.qrc
 INCLUDEPATH += /usr/include/mysql
@@ -83,3 +86,6 @@ LIBS += -L/usr/lib \
 
 LIBS += -L/usr/lib \
     -lz
+
+LIBS += -L/usr/lib \
+        -lusb

@@ -18,6 +18,8 @@ MainWindow::MainWindow(QWidget * parent, const QGLWidget * shareWidget, Qt::Wind
     timeLine->setFrameRange(0, 100);
     timeLine->setCurveShape(QTimeLine::EaseInCurve);
 
+    dev = openDevice();
+
     set = new Settings;
     setGeometry(2,2,796, 596);
 
@@ -117,6 +119,8 @@ MainWindow::MainWindow(QWidget * parent, const QGLWidget * shareWidget, Qt::Wind
     listChilds.append(menuPlayer);
     menuPlayer->setDatabase(set->db);
     menuPlayer->setPlayEngine(playEngine);
+    menuPlayer->setUsbDevice(dev);
+    menuPlayer->ledTime();
 
     connect(menuPlayer, SIGNAL(newChildToDraw(GlObject*)), this, SLOT(newChildToDraw(GlObject*)));
     connect(menuPlayer, SIGNAL(update()), this, SLOT(update()));
@@ -592,6 +596,23 @@ void MainWindow::newChildToDraw(GlObject * glObject)
       - update löst ein Neuzeichnen aus (paintEvent)*/
     drawPuffer.append(glObject);
     update();
+}
+
+usbDevice_t* MainWindow::openDevice()
+{
+    usbDevice_t     *dev = NULL;
+    unsigned char   rawVid[2] = {USB_CFG_VENDOR_ID}, rawPid[2] = {USB_CFG_DEVICE_ID};
+    char            vendorName[] = {USB_CFG_VENDOR_NAME, 0}, productName[] = {USB_CFG_DEVICE_NAME, 0};
+    int             vid = rawVid[0] + 256 * rawVid[1];
+    int             pid = rawPid[0] + 256 * rawPid[1];
+    int             err;
+
+        if ( (err = usbhidOpenDevice(&dev, vid, vendorName, pid, productName, 0)) != 0) {
+            qDebug("Fehler beim oeffnen des USB Device");
+            return NULL;
+        }
+        return dev;
+
 }
 
 void MainWindow::paintEvent(QPaintEvent *e)

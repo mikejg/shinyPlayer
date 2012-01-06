@@ -1,5 +1,6 @@
 #include "glmenuplayer.h"
 #include <QTimer>
+#include <QDateTime>
 
 GlMenuPlayer::GlMenuPlayer(GlObject* parent) : GlObject(parent)
 {
@@ -10,6 +11,7 @@ GlMenuPlayer::GlMenuPlayer(GlObject* parent) : GlObject(parent)
     fontSize = 20;
 
     trackList = new GlTrackList(this);
+    viewObject = trackList;
     trackList->setGeometry(2,90,796,438);
     trackList->setVisible(true);
     connect(trackList, SIGNAL(itemClicked(MetaPaket)), this, SLOT(playTrackListItem(MetaPaket)));
@@ -68,6 +70,15 @@ GlMenuPlayer::GlMenuPlayer(GlObject* parent) : GlObject(parent)
     comboBoxView->insertItem(QString("Info"));
     comboBoxView->insertItem(QString("Viz"));
     cbViewString = "List";
+
+    comboBoxLed = new GlComboBox(this);
+    comboBoxLed->setGeometry(55,12,100,30);
+    comboBoxLed->setFirstText("LED");
+    comboBoxLed->setImage();
+    comboBoxLed->insertItem(QString("Time"));
+    comboBoxLed->insertItem(QString("Artist"));
+    connect(comboBoxLed, SIGNAL(open(GlComboBox*)), this, SLOT(comboBoxLedOpen(GlComboBox*)));
+    connect(comboBoxLed, SIGNAL(closed(GlComboBox*)), this, SLOT(comboBoxLedClosed(GlComboBox*)));
 
     animation = new GlAnimation(this);
     animation->setGeometry(2,90,796,438);
@@ -160,6 +171,7 @@ void GlMenuPlayer::comboBoxClosed(GlComboBox* cb)
         coverView->setCoverUrl(playEngine->coverUrl());
         coverView->setImage();
         animation->setImage2(coverView->getImage());
+        viewObject = coverView;
     }
 
     if(cb->getText() == QString("List"))
@@ -167,6 +179,7 @@ void GlMenuPlayer::comboBoxClosed(GlComboBox* cb)
         trackList->setVisible(true);
         trackList->setImage();
         animation->setImage2(trackList->getImage());
+        viewObject = trackList;
     }
 
     if(cb->getText() == QString("Info"))
@@ -175,6 +188,7 @@ void GlMenuPlayer::comboBoxClosed(GlComboBox* cb)
         infoView->setVisible(true);
         infoView->setImage();
         animation->setImage2(infoView->getImage());
+        viewObject = infoView;
     }
 
     if(cb->getText() == QString("Viz"))
@@ -183,6 +197,7 @@ void GlMenuPlayer::comboBoxClosed(GlComboBox* cb)
         vizualizer->setImage();
         vizualizer->setStopIt(false);
         animation->setImage2(vizualizer->getImage());
+        viewObject = vizualizer;
         QTimer::singleShot(500, vizualizer, SLOT(doit()));
     }
 
@@ -203,6 +218,56 @@ void GlMenuPlayer::comboBoxOpen(GlComboBox* cb)
     newChildToDraw(cb);
 }
 
+void GlMenuPlayer::comboBoxLedClosed(GlComboBox *cb)
+{
+    buttonMain->setVisible(true);
+    buttonDown->setVisible(true);
+    buttonUp->setVisible(true);
+    buttonFor->setVisible(true);
+    buttonBack->setVisible(true);
+    buttonPause->setVisible(true);
+    buttonClear->setVisible(true);
+    comboBoxView->setVisible(true);
+
+    viewObject->setVisible(true);
+    newChildToDraw(this);
+}
+
+void GlMenuPlayer::comboBoxLedOpen(GlComboBox *cb)
+{
+    for(int i = 0; i < listChilds.size(); i++)
+       {
+         listChilds.at(i)->setVisible(false);
+       }
+
+    cb->setVisible(true);
+    newChildToDraw(cb);
+}
+
+char GlMenuPlayer::convertASCII_to_FlashTable(char c)
+{
+    //Nur Grossbuchstaben
+    if(c > 96 && c < 123)
+    {
+        c = c - 32;
+        //A ist im Flash 0, B = 1, usw
+        c = c - 65;
+        return c;
+    }
+
+    //A ist im Flash 0, B = 1 usw
+    if(c > 64 && c < 91)
+        return c - 65;
+
+    //Leerzeichen ist im Flash 26
+    if (c == 32)
+        return 26;
+
+    //Der Rest wird Leerzeichen
+        return 26;
+
+}
+
 void GlMenuPlayer::draw(QPainter *p)
 {
     drawBackGroundPixmap(p);
@@ -215,6 +280,7 @@ void GlMenuPlayer::draw(QPainter *p)
     buttonMain->draw(p);
     buttonClear->draw(p);
     comboBoxView->draw(p);
+    comboBoxLed->draw(p);
 
     QFont font = p->font();
     font.setPixelSize(fontSize);
@@ -332,6 +398,117 @@ void GlMenuPlayer::insertNewTitle(MetaPaket mp)
     playEngine->play(mp);
 }
 
+void GlMenuPlayer::ledLaufschrift(QString lt)
+{
+    if(dev == NULL) return;
+
+    QByteArray text = lt.toLocal8Bit();
+    char *data = new char[text.size() + 1];
+    strcpy(data, text.data());
+
+    bzero(buffer, sizeof(buffer));
+    buffer[1] = 1;
+    if( usbhidSetReport(dev, buffer, sizeof(buffer)) != 0)
+    {
+        qDebug("Fehler bei der vorbereitung");
+        return;
+    }
+
+    bzero(buffer, sizeof(buffer));
+
+    for ( int i = 1; i < 9; i++)
+    {
+        if( usbhidSetReport(dev, buffer, sizeof(buffer)) != 0)
+        {
+            qDebug("Fehler bei nullchunk");
+            return;
+        }
+    }
+
+    bzero(buffer, sizeof(buffer));
+
+    buffer[1] = 8;
+    if( usbhidSetReport(dev, buffer, sizeof(buffer)) != 0)
+    {
+        qDebug("Fehler bei der vorbereitung");
+        //usbhidCloseDevice(dev);
+        return;
+    }
+
+    bzero(buffer, sizeof(buffer));
+
+    strncpy(&buffer[1], data , strlen(data));
+
+    //uint i;
+    for(int x = 1; x < 65; x++)
+    {
+         buffer[x] = convertASCII_to_FlashTable(buffer[x]);
+    }
+
+    if( usbhidSetReport(dev, buffer, sizeof(buffer)) != 0)
+    {
+        qDebug("Fehler bei der Textübertragung");
+        //usbhidCloseDevice(dev);
+        return;
+     }
+
+    buffer[1] = 9;
+    if( usbhidSetReport(dev, buffer, sizeof(buffer)) != 0)
+    {
+        qDebug("Fehler bei dem starten der Laufschrift");
+        //usbhidCloseDevice(dev);
+        return ;
+    }
+    delete [] data;
+
+}
+
+void GlMenuPlayer::ledTime()
+{
+    if(dev == NULL)
+        return;
+
+    QDateTime zeit;
+    int h, m, s;
+
+    zeit = QDateTime::currentDateTime();
+    h = zeit.toString("hh:mm:ss").section(':',0,0).toInt();
+    m = zeit.toString("hh:mm:ss").section(':',1,1).toInt();
+    s = zeit.toString("hh:mm:ss").section(':',2,2).toInt();
+
+    bzero(buffer, sizeof(buffer));
+
+    buffer[1] = 1;
+    if( usbhidSetReport(dev, buffer, sizeof(buffer)) != 0)
+    {
+        qDebug("Fehler bei der vorbereitung");
+        return;
+    }
+
+    bzero(buffer, sizeof(buffer));
+
+    for ( int i = 1; i < 9; i++)
+    {
+        if( usbhidSetReport(dev, buffer, sizeof(buffer)) != 0)
+        {
+            qDebug("Fehler bei nullchunk");
+            return;
+        }
+    }
+
+    bzero(buffer, sizeof(buffer));
+    buffer[1] = 10;
+    buffer[2] = h;
+    buffer[3] = m;
+    buffer[4] = s;
+
+    if( usbhidSetReport(dev, buffer, sizeof(buffer)) != 0)
+    {
+        qDebug("Fehler bei dem starten Zeit");
+        return;
+    }
+}
+
 void GlMenuPlayer::mousePressEvent(QMouseEvent *event)
 {
     /*Überprüft ob die Maus über einem Button gedrückt wurde und
@@ -373,6 +550,7 @@ void GlMenuPlayer::nextSong()
                      " - " +
                     mp.title;
         newChildToDraw(this);
+        ledLaufschrift(mp.interpret);
     }
 
     if(this->isVisible() && trackList->isVisible())

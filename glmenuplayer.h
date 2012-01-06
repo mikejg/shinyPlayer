@@ -12,6 +12,12 @@
 #include "settings.h"
 #include "metapaket.h"
 #include "play_engine.h"
+#include "usbconfig.h"
+
+extern "C"
+{
+#include "hiddata.h"
+}
 
 class GlMenuPlayer : public GlObject
 {
@@ -30,8 +36,9 @@ private:
     GlButton* buttonPause;
     GlButton* buttonClear;
     GlComboBox* comboBoxView;
+    GlComboBox* comboBoxLed;
     QString cbViewString;
-
+    GlObject* viewObject;
     Database* db;
     Play_Engine* playEngine;
     QString infoString;
@@ -39,8 +46,14 @@ private:
     QColor fontColor;
     int fontSize;
 
+    usbDevice_t *dev;
+    char        buffer[65];    /* room for dummy report ID */
+    int         err;
+
 public:
     GlMenuPlayer(GlObject* parent = 0);
+
+    char convertASCII_to_FlashTable(char c);
 
     void draw(QPainter *p);
 
@@ -49,6 +62,9 @@ public:
     void insertNewQuick(int y1, int y2, uint pastTime, int point, bool boolRandom);
     void insertNewSampler(QString sampler);
     void insertNewTitle(MetaPaket mp);
+
+    void ledLaufschrift(QString lt);
+    void ledTime();
 
     void mousePressEvent (QMouseEvent * event);
     void mouseReleaseEvent ( QMouseEvent * event );
@@ -59,12 +75,15 @@ public:
     void rollOut(QPainter* p);
 
     void setDatabase(Database* d) { db = d; }
+    void setUsbDevice(usbDevice_t* d) { dev = d; }
 
 public slots:
     void buttonDown_clicked();
     void buttonUp_clicked();
     void comboBoxOpen(GlComboBox* cb);
     void comboBoxClosed(GlComboBox* cb);
+    void comboBoxLedOpen(GlComboBox* cb);
+    void comboBoxLedClosed(GlComboBox* cb);
     void nextSong();
     void playTrackListItem(MetaPaket);
     void prevSong();
