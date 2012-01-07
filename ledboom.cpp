@@ -167,12 +167,9 @@ void LedBoom::schreibeBuffer(int r)
     if(fehler == 2)
     {
         frameRate = frameRate + 50;
-        qDebug() << Q_FUNC_INFO;
         fehlerString = usb_strerror();
-        qDebug() << fehlerString;
         if(fehlerString == QString("error sending control message: Kein passendes Gerät gefunden"))
         {
-            qDebug() << "kein grät";
             setStopIt(true);
             QTimer::singleShot(500, this, SLOT(restart()));
         }
@@ -181,17 +178,6 @@ void LedBoom::schreibeBuffer(int r)
 
     if(fehler == 0 && frameRate > 35)
         frameRate = frameRate - 5;
-
-
-        /*if( usbhidSetReport(dev, buffer, 4) != 0 )
-          {
-            frameRate = frameRate + 250;
-            qDebug() << Q_FUNC_INFO;
-            qDebug() << QString("fehler beim schreiben %1").arg(frameRate);
-
-           }*/
-
-        //if(frameRate > 25) frameRate = frameRate - 5;
 }
 
 void LedBoom::clearLed()
@@ -203,8 +189,7 @@ void LedBoom::clearLed()
     if( usbhidSetReport(dev, buffer, 4) != 0 )
       {
         qDebug("fehler beim schreiben");
-       }
-   // if (dev == NULL) dev = openDevice();
+      }
 }
 
 void LedBoom::transform(QVector<float> &s )

@@ -14,6 +14,7 @@
 #include "play_engine.h"
 #include "usbconfig.h"
 #include "ledboom.h"
+#include <QTimer>
 
 extern "C"
 {
@@ -44,6 +45,8 @@ private:
     Play_Engine* playEngine;
     LedBoom* ledBoom;
     QString infoString;
+    QTimer* timer_ledAnimation;
+    QTimer* timer_ledTime;
 
     QColor fontColor;
     int fontSize;
@@ -53,7 +56,8 @@ private:
     int         err;
 
     bool ledArtist;
-
+    bool ledAnimation;
+    bool ledTime;
 public:
     GlMenuPlayer(GlObject* parent = 0);
 
@@ -68,7 +72,8 @@ public:
     void insertNewTitle(MetaPaket mp);
 
     void ledLaufschrift(QString lt);
-    void ledTime();
+    void ledStartTime();
+    void ledPlayAnimation();
 
     void mousePressEvent (QMouseEvent * event);
     void mouseReleaseEvent ( QMouseEvent * event );
@@ -90,6 +95,8 @@ public slots:
     void comboBoxClosed(GlComboBox* cb);
     void comboBoxLedOpen(GlComboBox* cb);
     void comboBoxLedClosed(GlComboBox* cb);
+    void ledTimer_Time_timeout();
+    void ledTimer_Animation_timeout();
     void nextSong();
     void playTrackListItem(MetaPaket);
     void prevSong();
