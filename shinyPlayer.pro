@@ -37,7 +37,8 @@ SOURCES += main.cpp \
     glinfoview.cpp \
     fht.cpp \
     glvizualizer.cpp \
-    hiddata.c
+    hiddata.c \
+    ledboom.cpp
 HEADERS += mainwindow.h \
     dialogsetting.h \
     settings.h \
@@ -71,7 +72,8 @@ HEADERS += mainwindow.h \
     fht.h \
     glvizualizer.h \
     hiddata.h \
-    usbconfig.h
+    usbconfig.h \
+    ledboom.h
 FORMS += mainwindow.ui
 RESOURCES += pixmaps.qrc
 INCLUDEPATH += /usr/include/mysql

@@ -18,7 +18,7 @@ MainWindow::MainWindow(QWidget * parent, const QGLWidget * shareWidget, Qt::Wind
     timeLine->setFrameRange(0, 100);
     timeLine->setCurveShape(QTimeLine::EaseInCurve);
 
-    dev = openDevice();
+    device = openDevice();
 
     set = new Settings;
     setGeometry(2,2,796, 596);
@@ -119,8 +119,8 @@ MainWindow::MainWindow(QWidget * parent, const QGLWidget * shareWidget, Qt::Wind
     listChilds.append(menuPlayer);
     menuPlayer->setDatabase(set->db);
     menuPlayer->setPlayEngine(playEngine);
-    menuPlayer->setUsbDevice(dev);
-    menuPlayer->ledTime();
+    menuPlayer->setUsbDevice(device);
+    //menuPlayer->ledTime();
 
     connect(menuPlayer, SIGNAL(newChildToDraw(GlObject*)), this, SLOT(newChildToDraw(GlObject*)));
     connect(menuPlayer, SIGNAL(update()), this, SLOT(update()));
@@ -172,7 +172,8 @@ MainWindow::MainWindow(QWidget * parent, const QGLWidget * shareWidget, Qt::Wind
 
 MainWindow::~MainWindow()
 {
-
+    qDebug("Close device");
+    usbhidCloseDevice(device);
 }
 
 void MainWindow::albumSelected(QString interpret, QString album)

@@ -7,6 +7,10 @@ GlMenuPlayer::GlMenuPlayer(GlObject* parent) : GlObject(parent)
     setGeometry(0,0,800,600);
     setBackGroundPixmap(QPixmap(":/images/player.png"));
 
+    ledArtist = false;
+    ledBoom = new LedBoom(this);
+    connect(ledBoom, SIGNAL(newUsbDevice()), this, SLOT(newUsbDevice()));
+
     fontColor = QColor(255,255,255,128);
     fontSize = 20;
 
@@ -228,6 +232,23 @@ void GlMenuPlayer::comboBoxLedClosed(GlComboBox *cb)
     buttonPause->setVisible(true);
     buttonClear->setVisible(true);
     comboBoxView->setVisible(true);
+
+    ledArtist = false;
+    ledBoom->setStopIt(true);
+
+    if(cb->getText() == QString("Time"))
+    {
+        //ledTime();
+        ledBoom->setStopIt(false);
+        ledBoom->clearLed();
+        ledBoom->doit();
+    }
+
+    if(cb->getText() == QString("Artist"))
+    {
+        ledArtist = true;
+        ledLaufschrift(playEngine->getMetaPaket().interpret);
+    }
 
     viewObject->setVisible(true);
     newChildToDraw(this);
@@ -539,6 +560,13 @@ void GlMenuPlayer::mouseReleaseEvent(QMouseEvent *event)
        }
 }
 
+void GlMenuPlayer::newUsbDevice()
+{
+    qDebug() << Q_FUNC_INFO;
+    usbhidCloseDevice(dev);
+    QTimer::singleShot(500, this, SLOT(openUsbDevice()));
+}
+
 void GlMenuPlayer::nextSong()
 {
     MetaPaket mp = trackList->nextItem();
@@ -550,8 +578,10 @@ void GlMenuPlayer::nextSong()
                      " - " +
                     mp.title;
         newChildToDraw(this);
-        ledLaufschrift(mp.interpret);
     }
+
+    if(ledArtist)
+        ledLaufschrift(mp.interpret);
 
     if(this->isVisible() && trackList->isVisible())
         newChildToDraw(trackList);
@@ -581,6 +611,32 @@ void GlMenuPlayer::nextSong()
     }
 }
 
+usbDevice_t* GlMenuPlayer::openDevice()
+{
+    usbDevice_t     *device = NULL;
+    unsigned char   rawVid[2] = {USB_CFG_VENDOR_ID}, rawPid[2] = {USB_CFG_DEVICE_ID};
+    char            vendorName[] = {USB_CFG_VENDOR_NAME, 0}, productName[] = {USB_CFG_DEVICE_NAME, 0};
+    int             vid = rawVid[0] + 256 * rawVid[1];
+    int             pid = rawPid[0] + 256 * rawPid[1];
+    int             err;
+
+        if ( (err = usbhidOpenDevice(&device, vid, vendorName, pid, productName, 0)) != 0) {
+            qDebug("Fehler beim oeffnen des USB Device");
+            return NULL;
+        }
+        return device;
+
+}
+
+void GlMenuPlayer::openUsbDevice()
+{
+    qDebug() << Q_FUNC_INFO;
+    dev = openDevice();
+    ledBoom->setUsbDevice(dev);
+    ledBoom->setStopIt(false);
+    ledBoom->doit();
+}
+
 void GlMenuPlayer::playTrackListItem(MetaPaket mp)
 {
     playEngine->play(mp);
@@ -588,6 +644,8 @@ void GlMenuPlayer::playTrackListItem(MetaPaket mp)
                  " - " +
                 mp.title;
     newChildToDraw(this);
+    if(ledArtist)
+        ledLaufschrift(mp.interpret);
 }
 
 void GlMenuPlayer::prevSong()
@@ -602,6 +660,9 @@ void GlMenuPlayer::prevSong()
                     mp.title;
         newChildToDraw(this);
     }
+
+    if(ledArtist)
+        ledLaufschrift(mp.interpret);
 
     if(this->isVisible() && trackList->isVisible())
         newChildToDraw(trackList);
@@ -670,6 +731,14 @@ void GlMenuPlayer::setPlayEngine(Play_Engine *pe)
 
     connect(playEngine, SIGNAL(finished()), this, SLOT(nextSong()));
     connect(buttonPause, SIGNAL(clicked()), playEngine, SLOT(pause()));
+    //connect(playEngine, SIGNAL(dataReady(QMap<Phonon::AudioDataOutput::Channel,QVector<qint16> >)),
+    //        vizualizer, SLOT(insertScope(QMap<Phonon::AudioDataOutput::Channel,QVector<qint16> >)));
     connect(playEngine, SIGNAL(dataReady(QMap<Phonon::AudioDataOutput::Channel,QVector<qint16> >)),
-            vizualizer, SLOT(insertScope(QMap<Phonon::AudioDataOutput::Channel,QVector<qint16> >)));
+            ledBoom, SLOT(insertScope(QMap<Phonon::AudioDataOutput::Channel,QVector<qint16> >)));
+}
+
+void GlMenuPlayer::setUsbDevice(usbDevice_t *d)
+{
+    dev = d;
+    ledBoom->setUsbDevice(d);
 }

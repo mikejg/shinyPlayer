@@ -285,7 +285,7 @@ int bytesSent;
     bytesSent = usb_control_msg((void *)device, USB_TYPE_CLASS | USB_RECIP_DEVICE | USB_ENDPOINT_OUT, USBRQ_HID_SET_REPORT, USB_HID_REPORT_TYPE_FEATURE << 8 | (buffer[0] & 0xff), 0, buffer, len, USB_TIMEOUT);
     if(bytesSent != len){
         if(bytesSent < 0)
-            fprintf(stderr, "Error sending message: %s\n", usb_strerror());
+            fprintf(stderr, "Error sending message:  %d %s\n", USBOPEN_ERR_IO, usb_strerror());
         return USBOPEN_ERR_IO;
     }
     return 0;

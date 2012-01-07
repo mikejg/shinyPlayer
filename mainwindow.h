@@ -50,7 +50,7 @@ private:
     GlMenuRadio* menuRadio;
     GlMenuSampler* menuSampler;
 
-    usbDevice_t *dev;
+    usbDevice_t *device;
 public:
     MainWindow(QWidget *parent = 0, const QGLWidget * shareWidget = 0, Qt::WindowFlags f = 0 );
     ~MainWindow();

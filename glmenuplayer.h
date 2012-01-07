@@ -13,6 +13,7 @@
 #include "metapaket.h"
 #include "play_engine.h"
 #include "usbconfig.h"
+#include "ledboom.h"
 
 extern "C"
 {
@@ -41,6 +42,7 @@ private:
     GlObject* viewObject;
     Database* db;
     Play_Engine* playEngine;
+    LedBoom* ledBoom;
     QString infoString;
 
     QColor fontColor;
@@ -49,6 +51,8 @@ private:
     usbDevice_t *dev;
     char        buffer[65];    /* room for dummy report ID */
     int         err;
+
+    bool ledArtist;
 
 public:
     GlMenuPlayer(GlObject* parent = 0);
@@ -69,13 +73,15 @@ public:
     void mousePressEvent (QMouseEvent * event);
     void mouseReleaseEvent ( QMouseEvent * event );
 
+    usbDevice_t* openDevice(void);
+
     void setPlayEngine(Play_Engine* pe);
 
     void rollIn(QPainter* p);
     void rollOut(QPainter* p);
 
     void setDatabase(Database* d) { db = d; }
-    void setUsbDevice(usbDevice_t* d) { dev = d; }
+    void setUsbDevice(usbDevice_t* d);
 
 public slots:
     void buttonDown_clicked();
@@ -88,7 +94,8 @@ public slots:
     void playTrackListItem(MetaPaket);
     void prevSong();
     void setNewPoints(MetaPaket);
-
+    void newUsbDevice();
+    void openUsbDevice();
 signals:
     void buttonMain_clicked();
 };
