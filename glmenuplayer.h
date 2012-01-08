@@ -54,10 +54,14 @@ private:
     usbDevice_t *dev;
     char        buffer[65];    /* room for dummy report ID */
     int         err;
+    int         fehler;
+    QString     fehlerString;
 
     bool ledArtist;
     bool ledAnimation;
     bool ledTime;
+    bool ledAnalyzer;
+
 public:
     GlMenuPlayer(GlObject* parent = 0);
 

@@ -2,6 +2,7 @@
 #include <QTimer>
 #include <QDateTime>
 #include "time.h"
+#include <usb.h>
 
 GlMenuPlayer::GlMenuPlayer(GlObject* parent) : GlObject(parent)
 {
@@ -254,6 +255,7 @@ void GlMenuPlayer::comboBoxLedClosed(GlComboBox *cb)
     ledArtist = false;
     ledAnimation = false;
     ledTime = false;
+    ledAnalyzer = false;
 
     timer_ledAnimation->stop();
     timer_ledTime->stop();
@@ -265,8 +267,8 @@ void GlMenuPlayer::comboBoxLedClosed(GlComboBox *cb)
     if(cb->getText() == QString("Time"))
     {
         ledTime = true;
-        ledStartTime();
         timer_ledTime->start(300000);
+        ledStartTime();
     }
 
     if(cb->getText() == QString("Artist"))
@@ -279,6 +281,7 @@ void GlMenuPlayer::comboBoxLedClosed(GlComboBox *cb)
     {
         connect(playEngine, SIGNAL(dataReady(QMap<Phonon::AudioDataOutput::Channel,QVector<qint16> >)),
                 ledBoom, SLOT(insertScope(QMap<Phonon::AudioDataOutput::Channel,QVector<qint16> >)));
+        ledAnalyzer = true;
         ledBoom->setStopIt(false);
         ledBoom->clearLed();
         ledBoom->doit();
@@ -287,8 +290,8 @@ void GlMenuPlayer::comboBoxLedClosed(GlComboBox *cb)
     if(cb->getText() == QString("Animation"))
     {
         ledAnimation = true;
-        ledPlayAnimation();
         timer_ledAnimation->start(30000);
+        ledPlayAnimation();
     }
 
     viewObject->setVisible(true);
@@ -536,21 +539,47 @@ void GlMenuPlayer::ledPlayAnimation()
 
     bzero(buffer, sizeof(buffer));
     buffer[1] = 1;
-    if( usbhidSetReport(dev, buffer, sizeof(buffer)) != 0)
+
+    fehler = usbhidSetReport(dev, buffer, sizeof(buffer));
+
+    if(fehler == 2)
+    {
+        fehlerString = usb_strerror();
+        if(fehlerString == QString("error sending control message: Kein passendes Gerät gefunden"))
+        {
+            qDebug() << Q_FUNC_INFO << "Fehler bei der Vorbereitung";
+            newUsbDevice();
+            return;
+        }
+    }
+
+    /*if( usbhidSetReport(dev, buffer, sizeof(buffer)) != 0)
     {
         qDebug("Fehler bei der vorbereitung");
         return;
-    }
+    }*/
 
     bzero(buffer, sizeof(buffer));
 
     for ( int i = 1; i < 9; i++)
     {
-        if( usbhidSetReport(dev, buffer, sizeof(buffer)) != 0)
+        fehler = usbhidSetReport(dev, buffer, sizeof(buffer));
+
+        if(fehler == 2)
+        {
+            fehlerString = usb_strerror();
+            if(fehlerString == QString("error sending control message: Kein passendes Gerät gefunden"))
+            {
+                qDebug() << Q_FUNC_INFO << "Fehler bei Nullchunk";
+                newUsbDevice();
+                return;
+            }
+        }
+        /*if( usbhidSetReport(dev, buffer, sizeof(buffer)) != 0)
         {
             qDebug("Fehler bei nullchunk");
             return;
-        }
+        }*/
     }
 
     bzero(buffer, sizeof(buffer));
@@ -558,10 +587,22 @@ void GlMenuPlayer::ledPlayAnimation()
     buffer[1] =4;
     buffer[2] = 30 + la;
 
-    if( usbhidSetReport(dev, buffer, 3) != 0)
+    fehler = usbhidSetReport(dev, buffer, 3);
+
+    if(fehler == 2)
+    {
+        fehlerString = usb_strerror();
+        if(fehlerString == QString("error sending control message: Kein passendes Gerät gefunden"))
+        {
+            qDebug() << Q_FUNC_INFO << "Fehler beim starten der Animation";
+            newUsbDevice();
+            return;
+        }
+    }
+    /*if( usbhidSetReport(dev, buffer, 3) != 0)
     {
         qDebug("Fehler beim starten der Animation");
-    }
+    }*/
 }
 
 void GlMenuPlayer::ledStartTime()
@@ -620,14 +661,14 @@ void GlMenuPlayer::ledTimer_Animation_timeout()
 {
     if(ledTime)
     {
-        ledStartTime();
         timer_ledTime->start(300000);
+        ledStartTime();
     }
 
     if(ledAnimation)
     {
-        ledPlayAnimation();
         timer_ledAnimation->start(30000);
+        ledPlayAnimation();
     }
 }
 
@@ -734,8 +775,19 @@ void GlMenuPlayer::openUsbDevice()
     qDebug() << Q_FUNC_INFO;
     dev = openDevice();
     ledBoom->setUsbDevice(dev);
-    ledBoom->setStopIt(false);
-    ledBoom->doit();
+
+    if(ledAnalyzer)
+    {
+        ledBoom->setStopIt(false);
+        ledBoom->doit();
+        return;
+    }
+
+    if(timer_ledAnimation->isActive())
+    {
+        ledPlayAnimation();
+        return;
+    }
 }
 
 void GlMenuPlayer::playTrackListItem(MetaPaket mp)
