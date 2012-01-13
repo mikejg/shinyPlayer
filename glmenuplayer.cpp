@@ -95,9 +95,9 @@ GlMenuPlayer::GlMenuPlayer(GlObject* parent) : GlObject(parent)
     timer_ledAnimation->setSingleShot(true);
     connect(timer_ledAnimation, SIGNAL(timeout()), this, SLOT(ledTimer_Animation_timeout()));
 
-    timer_ledTime = new QTimer(this);
+   /*timer_ledTime = new QTimer(this);
     timer_ledTime->setSingleShot(true);
-    connect(timer_ledTime, SIGNAL(timeout()), this, SLOT(ledTimer_Time_timeout()));
+    connect(timer_ledTime, SIGNAL(timeout()), this, SLOT(ledTimer_Time_timeout()));*/
     animation = new GlAnimation(this);
     animation->setGeometry(2,90,796,438);
 }
@@ -258,7 +258,7 @@ void GlMenuPlayer::comboBoxLedClosed(GlComboBox *cb)
     ledAnalyzer = false;
 
     timer_ledAnimation->stop();
-    timer_ledTime->stop();
+    //timer_ledTime->stop();
 
     ledBoom->setStopIt(true);
 
@@ -267,7 +267,7 @@ void GlMenuPlayer::comboBoxLedClosed(GlComboBox *cb)
     if(cb->getText() == QString("Time"))
     {
         ledTime = true;
-        timer_ledTime->start(300000);
+        //timer_ledTime->start(300000);
         ledStartTime();
     }
 
@@ -651,19 +651,19 @@ void GlMenuPlayer::ledStartTime()
     }
 }
 
-void GlMenuPlayer::ledTimer_Time_timeout()
+/*void GlMenuPlayer::ledTimer_Time_timeout()
 {
     timer_ledAnimation->start(30000);
     ledPlayAnimation();
-}
+}*/
 
 void GlMenuPlayer::ledTimer_Animation_timeout()
 {
-    if(ledTime)
+    /*if(ledTime)
     {
         timer_ledTime->start(300000);
         ledStartTime();
-    }
+    }*/
 
     if(ledAnimation)
     {

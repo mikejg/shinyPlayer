@@ -46,7 +46,7 @@ private:
     LedBoom* ledBoom;
     QString infoString;
     QTimer* timer_ledAnimation;
-    QTimer* timer_ledTime;
+    //QTimer* timer_ledTime;
 
     QColor fontColor;
     int fontSize;
@@ -99,7 +99,7 @@ public slots:
     void comboBoxClosed(GlComboBox* cb);
     void comboBoxLedOpen(GlComboBox* cb);
     void comboBoxLedClosed(GlComboBox* cb);
-    void ledTimer_Time_timeout();
+    //void ledTimer_Time_timeout();
     void ledTimer_Animation_timeout();
     void nextSong();
     void playTrackListItem(MetaPaket);
