@@ -33,6 +33,7 @@ GlMainMenu::GlMainMenu(GlObject* parent) : GlObject(parent)
     connect(buttonQuick, SIGNAL(clicked()), this, SIGNAL(buttonQuick_clicked()));
 
     buttonSetting = newButton(QString("Setting"), QRect(420,360,200,30));
+    connect(buttonSetting, SIGNAL(clicked()), this, SIGNAL(buttonSetting_clicked()));
 }
 
 void GlMainMenu::draw(QPainter *p)

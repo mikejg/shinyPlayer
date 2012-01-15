@@ -9,6 +9,8 @@ struct Settings
     bool embeddedSql;
     QString embeddedPath;
 
+    bool qmdbSQL;
+    QString qmdbServerIP;
     Database* db;
 };
 

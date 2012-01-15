@@ -3,7 +3,8 @@
 # -------------------------------------------------
 QT += opengl \
     sql \
-    phonon
+    phonon \
+    network
 TARGET = shinyPlayer
 TEMPLATE = app
 SOURCES += main.cpp \

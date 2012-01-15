@@ -48,6 +48,7 @@ signals:
     void buttonQuick_clicked();
     void buttonSampler_clicked();
     void buttonRadio_clicked();
+    void buttonSetting_clicked();
 };
 
 #endif // GLMAINMENU_H

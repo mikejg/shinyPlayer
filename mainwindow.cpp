@@ -62,9 +62,16 @@ MainWindow::MainWindow(QWidget * parent, const QGLWidget * shareWidget, Qt::Wind
         }
     }
 
-    set->db = new DB_Amarok_Embedded(this);
-    set->db->setEmbeddedPath(set->embeddedPath);
-    set->db->openDataBase();
+    if(set->embeddedSql)
+    {
+        qDebug("Amarok is selected");
+
+        set->db = new DB_Amarok_Embedded(this);
+        set->db->setEmbeddedPath(set->embeddedPath);
+        set->db->openDataBase();
+    }
+
+
 
     playEngine = new Play_Engine(this);
 
@@ -82,6 +89,7 @@ MainWindow::MainWindow(QWidget * parent, const QGLWidget * shareWidget, Qt::Wind
     connect(mainMenu, SIGNAL(buttonQuick_clicked()), this, SLOT(mainMenu_ButtonQuick_clicked()));
     connect(mainMenu, SIGNAL(buttonSampler_clicked()), this, SLOT(mainMenu_ButtonSampler_clicked()));
     connect(mainMenu, SIGNAL(buttonRadio_clicked()), this, SLOT(mainMenu_ButtonRadio_clicked()));
+    connect(mainMenu, SIGNAL(buttonSetting_clicked()), setting, SLOT(show()));
 
     menuInterpret = new GlMenuInterpret();
     menuInterpret->setVisible(false);
