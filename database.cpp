@@ -10,6 +10,12 @@ QPixmap Database::getCover(QString i, QString a)
     Q_UNUSED (a);
     return QPixmap();
 }
+QString Database::getCoverPath(QString i, QString a)
+{
+    Q_UNUSED (i);
+    Q_UNUSED (a);
+    return QString();
+}
 
 QStringList Database::getPlaylist()
 {
@@ -76,7 +82,20 @@ QList<MetaPaket> Database::getTracksFromSampler(QString sampler)
     return dummy;
 }
 
+
+QString Database::md5sum(QString s)
+{
+    QCA::Hash hash( "md5" );
+    QCA::Hex encoder;
+    //string zu einem hash machen und druch einen encoder jagen damit was brauchbares rauskommt
+    hash.update(s.toLower().toLocal8Bit());
+    QString encoded = encoder.arrayToString(hash.final());
+    return encoded.toLatin1();
+}
+
 void Database::setNewPoints(MetaPaket mp)
 {
     Q_UNUSED(mp);
 }
+
+

@@ -39,7 +39,8 @@ SOURCES += main.cpp \
     fht.cpp \
     glvizualizer.cpp \
     hiddata.c \
-    ledboom.cpp
+    ledboom.cpp \
+    db_qmdb_sql.cpp
 HEADERS += mainwindow.h \
     dialogsetting.h \
     settings.h \
@@ -74,7 +75,8 @@ HEADERS += mainwindow.h \
     glvizualizer.h \
     hiddata.h \
     usbconfig.h \
-    ledboom.h
+    ledboom.h \
+    db_qmdb_sql.h
 FORMS += mainwindow.ui
 RESOURCES += pixmaps.qrc
 INCLUDEPATH += /usr/include/mysql
@@ -92,3 +94,7 @@ LIBS += -L/usr/lib \
 
 LIBS += -L/usr/lib \
         -lusb
+
+INCLUDEPATH += /usr/include/QtCrypto
+LIBS += -L/usr/lib \
+    -lqca

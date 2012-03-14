@@ -6,6 +6,7 @@
 #include <QDebug>
 
 #include "db_amarok_embedded.h"
+#include "db_qmdb_sql.h"
 #include <QTimer>
 
 MainWindow::MainWindow(QWidget * parent, const QGLWidget * shareWidget, Qt::WindowFlags f) :
@@ -71,7 +72,13 @@ MainWindow::MainWindow(QWidget * parent, const QGLWidget * shareWidget, Qt::Wind
         set->db->openDataBase();
     }
 
+    if(set->qmdbSQL)
+    {
+        qDebug("QMDB is selected");
 
+        set->db = new DB_QMDB_SQL(this);
+        set->db->openDataBase(set->qmdbServerIP);
+    }
 
     playEngine = new Play_Engine(this);
 
