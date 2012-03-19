@@ -15,7 +15,7 @@ struct MetaPaket
     QString coverUrl;
     int points;
     int urlkey;
-    int lastPlayed;
+    uint lastPlayed;
 };
 
 #endif // METAPAKET_H

@@ -711,6 +711,8 @@ void GlMenuPlayer::newUsbDevice()
 
 void GlMenuPlayer::nextSong()
 {
+
+    db->upDateAccess(playEngine->getMetaPaket());
     MetaPaket mp = trackList->nextItem();
 
     if(!mp.isEmpty)

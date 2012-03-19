@@ -55,6 +55,8 @@ public:
     virtual void openDataBase(QString server) { Q_UNUSED(server); }
     void setEmbeddedPath(QString ep) { embeddedPath = ep; }
     virtual void setNewPoints(MetaPaket mp);
+    virtual void upDateAccess(MetaPaket mp) { Q_UNUSED(mp); }
+
 };
 
 #endif // DATABASE_H

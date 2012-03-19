@@ -156,7 +156,7 @@ QList<MetaPaket> DB_QMDB_SQL::getTracksFromAlbum(QString interpret, QString albu
     album = album.replace("'", "''");
     QSqlQuery query(db);
 
-    query.exec("SELECT pfad, title, tracknr, t_artist.name, t_album.name, wertung FROM t_title "
+    query.exec("SELECT pfad, title, tracknr, t_artist.name, t_album.name, wertung, gespielt FROM t_title "
                "INNER JOIN t_artist ON t_title.artist = t_artist.id "
                "INNER JOIN t_album ON t_title.album = t_album.id "
                "WHERE "
@@ -173,11 +173,97 @@ QList<MetaPaket> DB_QMDB_SQL::getTracksFromAlbum(QString interpret, QString albu
         metaPaket.album = query.value(4).toString();
         metaPaket.coverUrl = getCoverPath(metaPaket.interpret, metaPaket.album);
         metaPaket.points = query.value(5).toInt();
-        metaPaket.lastPlayed = 0;
+        metaPaket.lastPlayed = query.value(6).toUInt();;
         metaPakets.append(metaPaket);
     }
 
     return metaPakets;
+}
+
+QList<MetaPaket> DB_QMDB_SQL::getTracksFromQuick(int y1, int y2, uint t, int p, bool br)
+{
+    QList<MetaPaket> list;
+    MetaPaket metaPaket;
+    QDateTime dateTime = QDateTime::currentDateTime();
+    dateTime = dateTime.addMonths(-3);
+    QString coverUrl;
+    QString album;
+    QString interpret;
+    QString queryString ("SELECT pfad, title, tracknr, t_artist.name, t_album.name, t_year.name, "
+                         "wertung, gespielt, erfasst FROM t_title "
+               "INNER JOIN t_artist ON t_title.artist = t_artist.id "
+               "INNER JOIN t_album ON t_title.album = t_album.id "
+               "INNER JOIN t_year ON t_title.year = t_year.id ");
+
+    QString stringWhere = "";
+    QString stringAnd = "";
+    bool boolWhere = false;
+
+    if(y1 && y2)
+    {
+        stringWhere = QString("WHERE t_year.name > '%1' ").arg(y1);
+        boolWhere = true;
+        stringAnd = QString("AND t_year.name < '%1' ").arg(y2);
+    }
+
+    if(t)
+    {
+        if(boolWhere)
+        {
+            stringAnd = stringAnd + QString("AND t_title.erfasst > " + QString("%1").arg(t) + " ");
+        }
+        else
+        {
+            stringWhere = QString("WHERE t_title.erfasst > " + QString("%1").arg(t) + " ");
+            boolWhere = true;
+        }
+    }
+
+    if(p)
+    {
+        if(boolWhere)
+        {
+            stringAnd = stringAnd + QString("AND t_title.wertung > " + QString("%1").arg(p) + " ");
+        }
+
+        else
+        {
+            stringWhere = QString("WHERE t_title.wertung > " + QString("%1").arg(p) + " ");
+            boolWhere = true;
+        }
+    }
+
+    if(br)
+    {
+        queryString = queryString + " WHERE t_title.gespielt < "
+                                    + QString("%1").arg(dateTime.toTime_t()) +
+                                    " ORDER BY RAND() LIMIT 50" ;
+
+    }
+    else
+    {
+        queryString = queryString + stringWhere + stringAnd;
+    }
+    qDebug() << queryString;
+    QSqlQuery query(db);
+
+    query.exec(queryString);
+
+    while(query.next())
+    {
+        metaPaket.isEmpty = false;
+        metaPaket.url = query.value(0).toString();
+        metaPaket.title = query.value(1).toString();
+        metaPaket.interpret = query.value(3).toString();
+        metaPaket.album = query.value(4).toString();
+        metaPaket.coverUrl = getCoverPath(metaPaket.interpret, metaPaket.album);
+        metaPaket.points = query.value(6).toInt();
+        metaPaket.lastPlayed = query.value(7).toUInt();;
+        list.append(metaPaket);
+    }
+
+  
+    return list;
 }
 
 void DB_QMDB_SQL::setNewPoints(MetaPaket mp)
@@ -193,6 +279,35 @@ void DB_QMDB_SQL::setNewPoints(MetaPaket mp)
         id3v2->setComment(Qt4StringToString(commentString));
         f.save();
    }
+   QSqlQuery query(db);
+    QString queryString = QString("UPDATE t_title SET wertung = " +  QString("%1").arg(mp.points) + 
+               " WHERE pfad = '" + mp.url + "' ");
+ 
+    query.exec(queryString);;
+
+    //qDebug() << queryString;
 }
 
+void DB_QMDB_SQL::upDateAccess(MetaPaket mp)
+{
+    QDateTime dateTime = QDateTime::currentDateTime();
+    int playcount;
 
+    QSqlQuery query(db);
+    query.exec("UPDATE t_title SET playcounter = playcounter + 1, gespielt = " 
+                + QString("%1").arg(dateTime.toTime_t()) +
+               " WHERE "
+               "t_title.pfad = '" + mp.url + "'");
+
+    QString commentString = QString("QMDB#%1#%2").arg(mp.points).arg(dateTime.toTime_t());
+    qDebug() << commentString;
+    QByteArray fileName = QFile::encodeName( mp.url );
+
+    TagLib::MPEG::File f(fileName);
+    if(f.isValid())
+    {
+        TagLib::ID3v2::Tag* id3v2 = f.ID3v2Tag();
+        id3v2->setComment(Qt4StringToString(commentString));
+        f.save();
+   }
+}
