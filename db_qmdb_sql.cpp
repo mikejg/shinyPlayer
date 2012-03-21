@@ -136,6 +136,21 @@ QStringList DB_QMDB_SQL::getInterpreten(QString s)
     return list;
 }
 
+QStringList DB_QMDB_SQL::getSampler()
+{
+    QStringList list;
+    QSqlQuery query(db);
+    query.exec("SELECT t_album.name, t_album.artist FROM t_album "
+               "WHERE t_album.artist = 0");
+
+    while(query.next())
+    {
+        list << query.value(0).toString();
+    }
+
+    return list;
+}
+
 QStringList DB_QMDB_SQL::getStringListFromQuery(QString queryString)
 {
     QStringList sl;
@@ -291,7 +306,6 @@ void DB_QMDB_SQL::setNewPoints(MetaPaket mp)
 void DB_QMDB_SQL::upDateAccess(MetaPaket mp)
 {
     QDateTime dateTime = QDateTime::currentDateTime();
-    int playcount;
 
     QSqlQuery query(db);
     query.exec("UPDATE t_title SET playcounter = playcounter + 1, gespielt = " 

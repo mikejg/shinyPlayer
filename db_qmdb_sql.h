@@ -19,6 +19,8 @@ public:
     QStringList getAlbenFromInterpret(QString s);
     QPixmap getCover(QString i, QString a);
     QStringList getInterpreten(QString s);
+    QStringList getSampler();
+
     QStringList getStringListFromQuery(QString queryString);
 
     QList<MetaPaket> getTracksFromAlbum(QString interpret, QString album);
