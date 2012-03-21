@@ -5,7 +5,7 @@
 int main(int argc, char *argv[])
 {   
     system("xset -dpms");
-/   system("xset s off");
+    system("xset s off");
 
     QApplication a(argc, argv);
     MainWindow w;
