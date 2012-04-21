@@ -36,7 +36,7 @@ GlMainMenu::GlMainMenu(GlObject* parent) : GlObject(parent)
     connect(buttonSetting, SIGNAL(clicked()), this, SIGNAL(buttonSetting_clicked()));
     
     buttonPause = new GlButton(this);
-    buttonPause->setGeometry(370,540,63,50);
+    buttonPause->setGeometry(370,470,63,81);
     connect(buttonPause, SIGNAL(clicked()), this, SLOT(buttonPause_clicked()));
 }
 
