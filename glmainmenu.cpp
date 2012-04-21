@@ -44,7 +44,7 @@ GlMainMenu::GlMainMenu(GlObject* parent) : GlObject(parent)
 void GlMainMenu::buttonPause_clicked()
 {
     qDebug("MainMenu, buttonPause clicked");
-    system("/usr/sbin/pm-suspend");
+    system("/bin/pm-suspend");
 }
 void GlMainMenu::draw(QPainter *p)
 {
