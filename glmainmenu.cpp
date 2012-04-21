@@ -34,8 +34,18 @@ GlMainMenu::GlMainMenu(GlObject* parent) : GlObject(parent)
 
     buttonSetting = newButton(QString("Setting"), QRect(420,360,200,30));
     connect(buttonSetting, SIGNAL(clicked()), this, SIGNAL(buttonSetting_clicked()));
+    
+    buttonPause = new GlButton(this);
+    buttonPause->setGeometry(370,540,63,50);
+    connect(buttonPause, SIGNAL(clicked()), this, SLOT(buttonPause_clicked()));
 }
 
+
+void GlMainMenu::buttonPause_clicked()
+{
+    qDebug("MainMenu, buttonPause clicked");
+    system("/sbin/pm-suspend");
+}
 void GlMainMenu::draw(QPainter *p)
 {
     /*Zeichnet das Hauptmenü

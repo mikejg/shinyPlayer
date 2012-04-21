@@ -281,6 +281,35 @@ QList<MetaPaket> DB_QMDB_SQL::getTracksFromQuick(int y1, int y2, uint t, int p, 
     return list;
 }
 
+QList<MetaPaket> DB_QMDB_SQL::getTracksFromSampler(QString sampler)
+{
+    qDebug(qPrintable(QString("Database Sampler start")));
+    QList <MetaPaket> metaPakets;
+    MetaPaket m_metaPaket;
+
+    QSqlQuery query(db);
+    query.exec("SELECT pfad, tracknr, title, t_artist.name, t_album.name, wertung From t_title "
+               "INNER JOIN t_artist ON t_title.artist = t_artist.id "
+               "INNER JOIN t_album ON t_title.album = t_album.id "
+               "WHERE "
+               "t_album.name = '" + sampler + "' "
+               "ORDER BY tracknr, title");
+
+
+        while(query.next())
+        {
+            m_metaPaket.url = query.value(0).toString();
+            m_metaPaket.title = query.value(2).toString();
+            m_metaPaket.interpret = query.value(3).toString();
+            m_metaPaket.album = sampler;
+            m_metaPaket.points = query.value(5).toInt();
+            m_metaPaket.coverUrl = getCoverPath(m_metaPaket.interpret, m_metaPaket.album);
+            metaPakets.append(m_metaPaket);
+        }
+         
+   return metaPakets;
+}
+
 void DB_QMDB_SQL::setNewPoints(MetaPaket mp)
 {
     QString commentString = QString("QMDB#%1#%2").arg(mp.points).arg(mp.lastPlayed);

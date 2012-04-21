@@ -25,7 +25,8 @@ public:
     GlButton* buttonRadio;
     GlButton* buttonQuick;
     GlButton* buttonSetting;
-
+    GlButton* buttonPause;
+    
     GlMainMenu(GlObject* parent = 0);
 
     void draw(QPainter *p);
@@ -49,6 +50,9 @@ signals:
     void buttonSampler_clicked();
     void buttonRadio_clicked();
     void buttonSetting_clicked();
+
+public slots:
+  void buttonPause_clicked();
 };
 
 #endif // GLMAINMENU_H

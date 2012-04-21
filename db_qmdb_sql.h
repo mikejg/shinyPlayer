@@ -25,6 +25,7 @@ public:
 
     QList<MetaPaket> getTracksFromAlbum(QString interpret, QString album);
     QList<MetaPaket> getTracksFromQuick(int y1, int y2, uint t, int p, bool br);
+    QList<MetaPaket> getTracksFromSampler(QString sampler);
 
     void setNewPoints(MetaPaket mp);
     void upDateAccess(MetaPaket mp);
